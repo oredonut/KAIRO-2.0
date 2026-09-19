@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "prestart": "tsc",
     "start": "node dist/server.js",
     "dev": "npx ts-node-dev --respawn --transpile-only src/server.ts",
     "seed": "npx ts-node src/seed.ts",
