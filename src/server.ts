@@ -1,24 +1,24 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import path from 'path';
-import { ENV } from './config/env.js';
-import { errorHandler } from './middlewares/error.middleware.js';
+import { ENV } from './config/env';
+import { errorHandler } from './middlewares/error.middleware';
 
 // Import Feature Modules
-import authRoutes from './modules/auth/auth.routes.js';
-import usersRoutes from './modules/users/users.routes.js';
-import professionalsRoutes from './modules/professionals/professionals.routes.js';
-import categoriesRoutes from './modules/categories/categories.routes.js';
-import problemRequestsRoutes from './modules/problem-requests/problem-requests.routes.js';
-import aiRoutes from './modules/ai/ai.routes.js';
-import matchingRoutes from './modules/matching/matching.routes.js';
-import workSamplesRoutes from './modules/work-samples/work-samples.routes.js';
-import enquiriesRoutes from './modules/enquiries/enquiries.routes.js';
-import reviewsRoutes from './modules/reviews/reviews.routes.js';
-import savedProfessionalsRoutes from './modules/saved-professionals/saved-professionals.routes.js';
-import notificationsRoutes from './modules/notifications/notifications.routes.js';
-import subscriptionsRoutes from './modules/subscriptions/subscriptions.routes.js';
-import adminRoutes from './modules/admin/admin.routes.js';
+import authRoutes from './modules/auth/auth.routes';
+import usersRoutes from './modules/users/users.routes';
+import professionalsRoutes from './modules/professionals/professionals.routes';
+import categoriesRoutes from './modules/categories/categories.routes';
+import problemRequestsRoutes from './modules/problem-requests/problem-requests.routes';
+import aiRoutes from './modules/ai/ai.routes';
+import matchingRoutes from './modules/matching/matching.routes';
+import workSamplesRoutes from './modules/work-samples/work-samples.routes';
+import enquiriesRoutes from './modules/enquiries/enquiries.routes';
+import reviewsRoutes from './modules/reviews/reviews.routes';
+import savedProfessionalsRoutes from './modules/saved-professionals/saved-professionals.routes';
+import notificationsRoutes from './modules/notifications/notifications.routes';
+import subscriptionsRoutes from './modules/subscriptions/subscriptions.routes';
+import adminRoutes from './modules/admin/admin.routes';
 
 const app = express();
 

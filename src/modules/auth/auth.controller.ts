@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { db } from '../../config/firebase.js';
-import { ENV } from '../../config/env.js';
-import { sendSuccess, sendError } from '../../utils/response.js';
-import { User, UserRole } from '../../types/index.js';
-import { AuthenticatedRequest } from '../../middlewares/auth.middleware.js';
+import { db } from '../../config/firebase';
+import { ENV } from '../../config/env';
+import { sendSuccess, sendError } from '../../utils/response';
+import { User, UserRole } from '../../types/index';
+import { AuthenticatedRequest } from '../../middlewares/auth.middleware';
 
 export class AuthController {
   static async register(req: Request, res: Response) {

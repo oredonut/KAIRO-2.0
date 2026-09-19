@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { ENV } from '../config/env.js';
-import { sendError } from '../utils/response.js';
-import { UserRole } from '../types/index.js';
+import { ENV } from '../config/env';
+import { sendError } from '../utils/response';
+import { UserRole } from '../types/index';
 
 export interface AuthenticatedRequest extends Request {
   user?: {

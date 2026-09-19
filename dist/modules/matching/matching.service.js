@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MatchingService = void 0;
-const firebase_js_1 = require("../../config/firebase.js");
-const distance_js_1 = require("../../utils/distance.js");
+const firebase_1 = require("../../config/firebase");
+const distance_1 = require("../../utils/distance");
 class MatchingService {
     /**
      * Finds and ranks relevant professionals for a customer's problem request.
      */
     static async findMatchingProfessionals(problemRequestId, customerLat, customerLng, maxRadiusKm = 35) {
         // 1. Fetch Problem Request document from Firestore
-        const requestDoc = await firebase_js_1.db.collection('problem_requests').doc(problemRequestId).get();
+        const requestDoc = await firebase_1.db.collection('problem_requests').doc(problemRequestId).get();
         if (!requestDoc.exists) {
             throw new Error(`ProblemRequest with ID ${problemRequestId} not found.`);
         }
@@ -17,16 +17,16 @@ class MatchingService {
         const reqLat = customerLat ?? problemRequest.latitude;
         const reqLng = customerLng ?? problemRequest.longitude;
         // 2. Fetch all published professional profiles
-        const profilesSnapshot = await firebase_js_1.db.collection('professional_profiles').where('isPublished', '==', true).get();
+        const profilesSnapshot = await firebase_1.db.collection('professional_profiles').where('isPublished', '==', true).get();
         const profiles = profilesSnapshot.docs.map((doc) => doc.data());
         // 3. Fetch user records, work samples & reviews
-        const usersSnapshot = await firebase_js_1.db.collection('users').get();
+        const usersSnapshot = await firebase_1.db.collection('users').get();
         const usersMap = new Map();
         usersSnapshot.docs.forEach((doc) => {
             const u = doc.data();
             usersMap.set(u.id, u);
         });
-        const samplesSnapshot = await firebase_js_1.db.collection('work_samples').get();
+        const samplesSnapshot = await firebase_1.db.collection('work_samples').get();
         const samplesByProf = new Map();
         samplesSnapshot.docs.forEach((doc) => {
             const sample = doc.data();
@@ -34,7 +34,7 @@ class MatchingService {
             existing.push(sample);
             samplesByProf.set(sample.professionalId, existing);
         });
-        const reviewsSnapshot = await firebase_js_1.db.collection('reviews').get();
+        const reviewsSnapshot = await firebase_1.db.collection('reviews').get();
         const reviewsByProf = new Map();
         reviewsSnapshot.docs.forEach((doc) => {
             const rev = doc.data();
@@ -45,7 +45,7 @@ class MatchingService {
         const results = [];
         for (const prof of profiles) {
             // Distance calculation
-            const distKm = (0, distance_js_1.calculateDistanceKm)(reqLat, reqLng, prof.latitude, prof.longitude);
+            const distKm = (0, distance_1.calculateDistanceKm)(reqLat, reqLng, prof.latitude, prof.longitude);
             // Skill overlap
             const requiredSkills = problemRequest.requiredSkills || [];
             const profSkills = prof.skills || [];

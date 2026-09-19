@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { SavedProfessionalsController } from './saved-professionals.controller.js';
-import { authenticate } from '../../middlewares/auth.middleware.js';
+import { SavedProfessionalsController } from './saved-professionals.controller';
+import { authenticate } from '../../middlewares/auth.middleware';
 
 const router = Router();
 

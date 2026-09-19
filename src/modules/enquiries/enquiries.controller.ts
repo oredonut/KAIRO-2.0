@@ -1,8 +1,8 @@
 import { Response } from 'express';
-import { db } from '../../config/firebase.js';
-import { sendSuccess, sendError } from '../../utils/response.js';
-import { AuthenticatedRequest } from '../../middlewares/auth.middleware.js';
-import { Enquiry, Notification } from '../../types/index.js';
+import { db } from '../../config/firebase';
+import { sendSuccess, sendError } from '../../utils/response';
+import { AuthenticatedRequest } from '../../middlewares/auth.middleware';
+import { Enquiry, Notification } from '../../types/index';
 
 export class EnquiriesController {
   static async createEnquiry(req: AuthenticatedRequest, res: Response) {

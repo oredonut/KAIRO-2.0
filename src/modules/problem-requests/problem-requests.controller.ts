@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { db } from '../../config/firebase.js';
-import { sendSuccess, sendError } from '../../utils/response.js';
-import { AuthenticatedRequest } from '../../middlewares/auth.middleware.js';
-import { ProblemRequest, ProblemAnalysis } from '../../types/index.js';
-import { AIService } from '../ai/ai.service.js';
+import { db } from '../../config/firebase';
+import { sendSuccess, sendError } from '../../utils/response';
+import { AuthenticatedRequest } from '../../middlewares/auth.middleware';
+import { ProblemRequest, ProblemAnalysis } from '../../types/index';
+import { AIService } from '../ai/ai.service';
 
 export class ProblemRequestsController {
   /**

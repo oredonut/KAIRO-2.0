@@ -1,8 +1,8 @@
 import { Response } from 'express';
-import { db } from '../../config/firebase.js';
-import { sendSuccess, sendError } from '../../utils/response.js';
-import { AuthenticatedRequest } from '../../middlewares/auth.middleware.js';
-import { Review, ProfessionalProfile } from '../../types/index.js';
+import { db } from '../../config/firebase';
+import { sendSuccess, sendError } from '../../utils/response';
+import { AuthenticatedRequest } from '../../middlewares/auth.middleware';
+import { Review, ProfessionalProfile } from '../../types/index';
 
 export class ReviewsController {
   static async createReview(req: AuthenticatedRequest, res: Response) {

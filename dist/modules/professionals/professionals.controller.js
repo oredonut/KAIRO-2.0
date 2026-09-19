@@ -1,44 +1,44 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProfessionalsController = void 0;
-const firebase_js_1 = require("../../config/firebase.js");
-const response_js_1 = require("../../utils/response.js");
-const ai_service_js_1 = require("../ai/ai.service.js");
+const firebase_1 = require("../../config/firebase");
+const response_1 = require("../../utils/response");
+const ai_service_1 = require("../ai/ai.service");
 class ProfessionalsController {
     static async getMyProfile(req, res) {
         try {
             const userId = req.user?.id;
-            const snapshot = await firebase_js_1.db.collection('professional_profiles').where('userId', '==', userId).get();
+            const snapshot = await firebase_1.db.collection('professional_profiles').where('userId', '==', userId).get();
             if (snapshot.empty) {
-                return (0, response_js_1.sendError)(res, 'Professional profile not found.', 404);
+                return (0, response_1.sendError)(res, 'Professional profile not found.', 404);
             }
             const profile = snapshot.docs[0].data();
-            return (0, response_js_1.sendSuccess)(res, profile, 'Profile fetched successfully.');
+            return (0, response_1.sendSuccess)(res, profile, 'Profile fetched successfully.');
         }
         catch (err) {
-            return (0, response_js_1.sendError)(res, err.message || 'Failed to fetch profile.', 500);
+            return (0, response_1.sendError)(res, err.message || 'Failed to fetch profile.', 500);
         }
     }
     static async getProfileById(req, res) {
         try {
             const { id } = req.params;
-            const doc = await firebase_js_1.db.collection('professional_profiles').doc(id).get();
+            const doc = await firebase_1.db.collection('professional_profiles').doc(id).get();
             if (!doc.exists) {
-                return (0, response_js_1.sendError)(res, 'Professional profile not found.', 404);
+                return (0, response_1.sendError)(res, 'Professional profile not found.', 404);
             }
             const profile = doc.data();
-            return (0, response_js_1.sendSuccess)(res, profile, 'Profile details retrieved.');
+            return (0, response_1.sendSuccess)(res, profile, 'Profile details retrieved.');
         }
         catch (err) {
-            return (0, response_js_1.sendError)(res, err.message || 'Failed to fetch profile.', 500);
+            return (0, response_1.sendError)(res, err.message || 'Failed to fetch profile.', 500);
         }
     }
     static async updateProfile(req, res) {
         try {
             const userId = req.user?.id;
-            const snapshot = await firebase_js_1.db.collection('professional_profiles').where('userId', '==', userId).get();
+            const snapshot = await firebase_1.db.collection('professional_profiles').where('userId', '==', userId).get();
             if (snapshot.empty) {
-                return (0, response_js_1.sendError)(res, 'Professional profile not found.', 404);
+                return (0, response_1.sendError)(res, 'Professional profile not found.', 404);
             }
             const profileDoc = snapshot.docs[0];
             const existingProfile = profileDoc.data();
@@ -71,11 +71,11 @@ class ProfessionalsController {
                 // IMPORTANT Rule #7: isVerified CANNOT be overwritten by artisan! Keep existing value.
                 isVerified: existingProfile.isVerified,
             };
-            await firebase_js_1.db.collection('professional_profiles').doc(existingProfile.id).update(updatedProfile);
-            return (0, response_js_1.sendSuccess)(res, { ...existingProfile, ...updatedProfile }, 'Professional profile updated successfully.');
+            await firebase_1.db.collection('professional_profiles').doc(existingProfile.id).update(updatedProfile);
+            return (0, response_1.sendSuccess)(res, { ...existingProfile, ...updatedProfile }, 'Professional profile updated successfully.');
         }
         catch (err) {
-            return (0, response_js_1.sendError)(res, err.message || 'Failed to update profile.', 500);
+            return (0, response_1.sendError)(res, err.message || 'Failed to update profile.', 500);
         }
     }
     /**
@@ -85,13 +85,13 @@ class ProfessionalsController {
         try {
             const { description } = req.body;
             if (!description || typeof description !== 'string') {
-                return (0, response_js_1.sendError)(res, 'Description string is required.');
+                return (0, response_1.sendError)(res, 'Description string is required.');
             }
-            const parsedResult = await ai_service_js_1.AIService.parseArtisanProfile(description);
-            return (0, response_js_1.sendSuccess)(res, parsedResult, 'Profile description parsed into structured skills & details.');
+            const parsedResult = await ai_service_1.AIService.parseArtisanProfile(description);
+            return (0, response_1.sendSuccess)(res, parsedResult, 'Profile description parsed into structured skills & details.');
         }
         catch (err) {
-            return (0, response_js_1.sendError)(res, err.message || 'Failed to parse artisan profile.', 500);
+            return (0, response_1.sendError)(res, err.message || 'Failed to parse artisan profile.', 500);
         }
     }
 }

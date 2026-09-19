@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AIService = exports.ProfileParseSchema = exports.ProblemAnalysisSchema = void 0;
 const zod_1 = require("zod");
-const firebase_js_1 = require("../../config/firebase.js");
+const firebase_1 = require("../../config/firebase");
 // Zod Schema for Problem Analysis output (Requirement #16)
 exports.ProblemAnalysisSchema = zod_1.z.object({
     categorySlug: zod_1.z.string().min(1),
@@ -42,7 +42,7 @@ class AIService {
         const maxAttempts = 2;
         let parsedResult = null;
         // Fetch existing categories from Firestore for context
-        const categoriesSnapshot = await firebase_js_1.db.collection('categories').get();
+        const categoriesSnapshot = await firebase_1.db.collection('categories').get();
         const existingCategories = categoriesSnapshot.docs.map((doc) => doc.data());
         while (attempts < maxAttempts && !parsedResult) {
             attempts++;

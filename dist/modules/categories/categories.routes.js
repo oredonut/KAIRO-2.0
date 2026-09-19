@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const categories_controller_js_1 = require("./categories.controller.js");
-const auth_middleware_js_1 = require("../../middlewares/auth.middleware.js");
+const categories_controller_1 = require("./categories.controller");
+const auth_middleware_1 = require("../../middlewares/auth.middleware");
 const router = (0, express_1.Router)();
-router.get('/', categories_controller_js_1.CategoriesController.getAllCategories);
-router.get('/:categoryId/skills', categories_controller_js_1.CategoriesController.getSkillsByCategory);
-router.get('/:categoryId/services', categories_controller_js_1.CategoriesController.getServicesByCategory);
-router.post('/', auth_middleware_js_1.authenticate, (0, auth_middleware_js_1.requireRole)(['ADMIN']), categories_controller_js_1.CategoriesController.createCategory);
+router.get('/', categories_controller_1.CategoriesController.getAllCategories);
+router.get('/:categoryId/skills', categories_controller_1.CategoriesController.getSkillsByCategory);
+router.get('/:categoryId/services', categories_controller_1.CategoriesController.getServicesByCategory);
+router.post('/', auth_middleware_1.authenticate, (0, auth_middleware_1.requireRole)(['ADMIN']), categories_controller_1.CategoriesController.createCategory);
 exports.default = router;

@@ -1,6 +1,6 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { ENV } from './env.js';
+import { ENV } from './env';
 import fs from 'fs';
 import path from 'path';
 

@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WorkSamplesController = void 0;
-const firebase_js_1 = require("../../config/firebase.js");
-const aws_js_1 = require("../../config/aws.js");
-const response_js_1 = require("../../utils/response.js");
+const firebase_1 = require("../../config/firebase");
+const aws_1 = require("../../config/aws");
+const response_1 = require("../../utils/response");
 class WorkSamplesController {
     /**
      * Upload work sample with image attachments via AWS S3 / Object Storage
@@ -13,12 +13,12 @@ class WorkSamplesController {
             const userId = req.user?.id;
             const { title, categoryId, problemDescription, workDescription, resultDescription } = req.body;
             if (!title || !problemDescription || !workDescription || !resultDescription) {
-                return (0, response_js_1.sendError)(res, 'title, problemDescription, workDescription, and resultDescription are required.');
+                return (0, response_1.sendError)(res, 'title, problemDescription, workDescription, and resultDescription are required.');
             }
             // Fetch professional profile
-            const profQuery = await firebase_js_1.db.collection('professional_profiles').where('userId', '==', userId).get();
+            const profQuery = await firebase_1.db.collection('professional_profiles').where('userId', '==', userId).get();
             if (profQuery.empty) {
-                return (0, response_js_1.sendError)(res, 'Only registered professionals can upload work samples.', 403);
+                return (0, response_1.sendError)(res, 'Only registered professionals can upload work samples.', 403);
             }
             const professional = profQuery.docs[0].data();
             const files = req.files;
@@ -26,7 +26,7 @@ class WorkSamplesController {
             // Process uploaded image files using AWS S3
             if (files && files.length > 0) {
                 for (const file of files) {
-                    const url = await (0, aws_js_1.uploadToStorage)(file.buffer, file.originalname, file.mimetype);
+                    const url = await (0, aws_1.uploadToStorage)(file.buffer, file.originalname, file.mimetype);
                     imageUrls.push(url);
                 }
             }
@@ -43,11 +43,11 @@ class WorkSamplesController {
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
             };
-            await firebase_js_1.db.collection('work_samples').doc(sampleId).set(workSample);
-            return (0, response_js_1.sendSuccess)(res, workSample, 'Work sample uploaded and added to professional portfolio.', 201);
+            await firebase_1.db.collection('work_samples').doc(sampleId).set(workSample);
+            return (0, response_1.sendSuccess)(res, workSample, 'Work sample uploaded and added to professional portfolio.', 201);
         }
         catch (err) {
-            return (0, response_js_1.sendError)(res, err.message || 'Failed to create work sample.', 500);
+            return (0, response_1.sendError)(res, err.message || 'Failed to create work sample.', 500);
         }
     }
     /**
@@ -57,28 +57,28 @@ class WorkSamplesController {
         try {
             const { fileName, mimeType } = req.body;
             if (!fileName || !mimeType) {
-                return (0, response_js_1.sendError)(res, 'fileName and mimeType are required.');
+                return (0, response_1.sendError)(res, 'fileName and mimeType are required.');
             }
             const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
             if (!allowedMimeTypes.includes(mimeType)) {
-                return (0, response_js_1.sendError)(res, `File type ${mimeType} not allowed. Only JPEG, PNG, and WebP are supported.`);
+                return (0, response_1.sendError)(res, `File type ${mimeType} not allowed. Only JPEG, PNG, and WebP are supported.`);
             }
-            const result = await (0, aws_js_1.getPresignedUploadUrl)(fileName, mimeType);
-            return (0, response_js_1.sendSuccess)(res, result, 'AWS S3 presigned upload URL generated.');
+            const result = await (0, aws_1.getPresignedUploadUrl)(fileName, mimeType);
+            return (0, response_1.sendSuccess)(res, result, 'AWS S3 presigned upload URL generated.');
         }
         catch (err) {
-            return (0, response_js_1.sendError)(res, err.message || 'Failed to generate presigned URL.', 500);
+            return (0, response_1.sendError)(res, err.message || 'Failed to generate presigned URL.', 500);
         }
     }
     static async getByProfessionalId(req, res) {
         try {
             const { professionalId } = req.params;
-            const snapshot = await firebase_js_1.db.collection('work_samples').where('professionalId', '==', professionalId).get();
+            const snapshot = await firebase_1.db.collection('work_samples').where('professionalId', '==', professionalId).get();
             const samples = snapshot.docs.map((doc) => doc.data());
-            return (0, response_js_1.sendSuccess)(res, samples, 'Work samples retrieved.');
+            return (0, response_1.sendSuccess)(res, samples, 'Work samples retrieved.');
         }
         catch (err) {
-            return (0, response_js_1.sendError)(res, err.message || 'Failed to fetch work samples.', 500);
+            return (0, response_1.sendError)(res, err.message || 'Failed to fetch work samples.', 500);
         }
     }
 }

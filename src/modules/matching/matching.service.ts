@@ -1,6 +1,6 @@
-import { db } from '../../config/firebase.js';
-import { ProfessionalProfile, User, WorkSample, ProblemRequest } from '../../types/index.js';
-import { calculateDistanceKm } from '../../utils/distance.js';
+import { db } from '../../config/firebase';
+import { ProfessionalProfile, User, WorkSample, ProblemRequest } from '../../types/index';
+import { calculateDistanceKm } from '../../utils/distance';
 
 export interface MatchResult {
   id: string;

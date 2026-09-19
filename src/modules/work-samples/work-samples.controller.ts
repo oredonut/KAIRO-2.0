@@ -1,9 +1,9 @@
 import { Response } from 'express';
-import { db } from '../../config/firebase.js';
-import { uploadToStorage, getPresignedUploadUrl } from '../../config/aws.js';
-import { sendSuccess, sendError } from '../../utils/response.js';
-import { AuthenticatedRequest } from '../../middlewares/auth.middleware.js';
-import { WorkSample, ProfessionalProfile } from '../../types/index.js';
+import { db } from '../../config/firebase';
+import { uploadToStorage, getPresignedUploadUrl } from '../../config/aws';
+import { sendSuccess, sendError } from '../../utils/response';
+import { AuthenticatedRequest } from '../../middlewares/auth.middleware';
+import { WorkSample, ProfessionalProfile } from '../../types/index';
 
 export class WorkSamplesController {
   /**

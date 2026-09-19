@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
-import { AIService } from './ai.service.js';
-import { sendSuccess, sendError } from '../../utils/response.js';
+import { AIService } from './ai.service';
+import { sendSuccess, sendError } from '../../utils/response';
 
 const router = Router();
 

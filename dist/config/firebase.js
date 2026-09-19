@@ -35,15 +35,15 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.db = void 0;
 const admin = __importStar(require("firebase-admin"));
-const env_js_1 = require("./env.js");
+const env_1 = require("./env");
 let firestoreInstance = null;
 try {
-    if (env_js_1.ENV.FIREBASE_PRIVATE_KEY && env_js_1.ENV.FIREBASE_CLIENT_EMAIL) {
+    if (env_1.ENV.FIREBASE_PRIVATE_KEY && env_1.ENV.FIREBASE_CLIENT_EMAIL) {
         admin.initializeApp({
             credential: admin.credential.cert({
-                projectId: env_js_1.ENV.FIREBASE_PROJECT_ID,
-                clientEmail: env_js_1.ENV.FIREBASE_CLIENT_EMAIL,
-                privateKey: env_js_1.ENV.FIREBASE_PRIVATE_KEY,
+                projectId: env_1.ENV.FIREBASE_PROJECT_ID,
+                clientEmail: env_1.ENV.FIREBASE_CLIENT_EMAIL,
+                privateKey: env_1.ENV.FIREBASE_PRIVATE_KEY,
             }),
         });
         firestoreInstance = admin.firestore();

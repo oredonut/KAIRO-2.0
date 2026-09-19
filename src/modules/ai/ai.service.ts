@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { db } from '../../config/firebase.js';
-import { Category } from '../../types/index.js';
+import { db } from '../../config/firebase';
+import { Category } from '../../types/index';
 
 // Zod Schema for Problem Analysis output (Requirement #16)
 export const ProblemAnalysisSchema = z.object({

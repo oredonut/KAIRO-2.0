@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { db } from '../../config/firebase.js';
-import { sendSuccess, sendError } from '../../utils/response.js';
-import { Category, Skill, Service } from '../../types/index.js';
+import { db } from '../../config/firebase';
+import { sendSuccess, sendError } from '../../utils/response';
+import { Category, Skill, Service } from '../../types/index';
 
 export class CategoriesController {
   static async getAllCategories(req: Request, res: Response) {

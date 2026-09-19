@@ -1,7 +1,7 @@
 import { Response } from 'express';
-import { db } from '../../config/firebase.js';
-import { AuthenticatedRequest } from '../../middlewares/auth.middleware.js';
-import { sendSuccess, sendError } from '../../utils/response.js';
+import { db } from '../../config/firebase';
+import { AuthenticatedRequest } from '../../middlewares/auth.middleware';
+import { sendSuccess, sendError } from '../../utils/response';
 
 export class UsersController {
   static async updateLocation(req: AuthenticatedRequest, res: Response) {

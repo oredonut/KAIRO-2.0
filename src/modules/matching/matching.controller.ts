@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { MatchingService } from './matching.service.js';
-import { sendSuccess, sendError } from '../../utils/response.js';
+import { MatchingService } from './matching.service';
+import { sendSuccess, sendError } from '../../utils/response';
 
 export class MatchingController {
   static async findProfessionals(req: Request, res: Response) {

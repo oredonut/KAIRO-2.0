@@ -1,8 +1,8 @@
 import { Response } from 'express';
-import { db } from '../../config/firebase.js';
-import { sendSuccess, sendError } from '../../utils/response.js';
-import { AuthenticatedRequest } from '../../middlewares/auth.middleware.js';
-import { SavedProfessional } from '../../types/index.js';
+import { db } from '../../config/firebase';
+import { sendSuccess, sendError } from '../../utils/response';
+import { AuthenticatedRequest } from '../../middlewares/auth.middleware';
+import { SavedProfessional } from '../../types/index';
 
 export class SavedProfessionalsController {
   static async toggleSave(req: AuthenticatedRequest, res: Response) {

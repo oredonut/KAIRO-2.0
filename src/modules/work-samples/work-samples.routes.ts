@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { WorkSamplesController } from './work-samples.controller.js';
-import { authenticate, requireRole } from '../../middlewares/auth.middleware.js';
-import { upload } from '../../middlewares/upload.middleware.js';
+import { WorkSamplesController } from './work-samples.controller';
+import { authenticate, requireRole } from '../../middlewares/auth.middleware';
+import { upload } from '../../middlewares/upload.middleware';
 
 const router = Router();
 

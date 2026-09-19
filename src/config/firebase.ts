@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin';
-import { ENV } from './env.js';
+import { ENV } from './env';
 
 let firestoreInstance: any = null;
 
