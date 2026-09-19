@@ -1,27 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Sparkles, ShieldCheck, Wrench, Search, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Search, ShieldCheck, Wrench, CheckCircle2 } from 'lucide-react';
+import KairoIcon, { KairoLogo } from '../components/KairoIcon';
 
-const SLIDES = [
+const EXPLANATORY_POINTS = [
   {
+    num: '01',
     tag: 'PROBLEM-FIRST DISCOVERY',
-    headline: 'You don’t need to know who you need.',
-    subhead: 'Just tell KAIRO what is wrong in plain words. Our AI identifies the exact skill required and matches you with trusted local professionals.',
+    title: 'Tell KAIRO what is wrong',
+    desc: 'Describe the problem in your own words — text, voice, or photo. No technical jargon required.',
     icon: Search,
-    highlight: 'No scrolling through endless categories.'
   },
   {
-    tag: 'VERIFIED ARTISAN EVIDENCE',
-    headline: 'See real proof of past work.',
-    subhead: 'KAIRO gives you evidence before you choose — verified work samples, honest customer reviews, and clear match reasoning.',
-    icon: ShieldCheck,
-    highlight: 'Know who you are choosing before sending an enquiry.'
-  },
-  {
-    tag: 'DIRECT ENQUIRY HANDOFF',
-    headline: 'Connect with confidence.',
-    subhead: 'Send structured problem enquiries directly to matched artisans. Connect via call or WhatsApp once accepted.',
+    num: '02',
+    tag: 'INTELLIGENT DIAGNOSIS',
+    title: 'KAIRO understands what you need',
+    desc: 'Our AI identifies the exact service required and asks targeted clarification questions to refine the match.',
     icon: Wrench,
-    highlight: 'Fast, seamless, and transparent.'
+  },
+  {
+    num: '03',
+    tag: 'EVIDENCE-BASED MATCHING',
+    title: 'KAIRO finds relevant skilled people',
+    desc: 'Compare verified local professionals with genuine proof of work, ratings, and clear match reasoning.',
+    icon: ShieldCheck,
   }
 ];
 
@@ -30,12 +31,10 @@ export default function SplashScreen({ onGetStarted }) {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setActiveSlide(prev => (prev + 1) % SLIDES.length);
+      setActiveSlide(prev => (prev + 1) % EXPLANATORY_POINTS.length);
     }, 4500);
     return () => clearInterval(timer);
   }, []);
-
-  const SlideIcon = SLIDES[activeSlide].icon;
 
   return (
     <div style={{
@@ -43,7 +42,7 @@ export default function SplashScreen({ onGetStarted }) {
       background: 'var(--warm-cream)',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'between',
+      justify: 'space-between',
       padding: '40px 24px',
       position: 'relative',
       overflow: 'hidden'
@@ -58,150 +57,89 @@ export default function SplashScreen({ onGetStarted }) {
         borderRadius: '50%', background: 'var(--soft-sage)', filter: 'blur(80px)', opacity: 0.6, pointerEvents: 'none'
       }} />
 
-      {/* Top Header Logo */}
+      {/* Top Header Logo with DISTINCTIVE GEOMETRIC ICON */}
       <div className="page-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', zIndex: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            width: 42, height: 42, borderRadius: 12,
-            background: 'var(--deep-evergreen)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: 'var(--shadow-sm)'
-          }}>
-            <Sparkles size={22} color="var(--warm-gold)" />
-          </div>
-          <span style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--deep-evergreen)', letterSpacing: '-0.03em' }}>
-            KAIRO
-          </span>
-        </div>
+        <KairoLogo size={36} />
         <div className="badge badge-green" style={{ fontSize: '14px', padding: '6px 14px' }}>
           <CheckCircle2 size={15} color="var(--kairo-green)" />
           <span>Launch Ready Prototype</span>
         </div>
       </div>
 
-      {/* Main Content Area */}
+      {/* Main Centered Composition (Section 2 - NO Experience Preview Card!) */}
       <div className="page-wrapper" style={{
-        flex: 1, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-        alignItems: 'center', gap: 48, padding: '40px 0', position: 'relative', zIndex: 10
+        flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        padding: '56px 0', position: 'relative', zIndex: 10, textAlign: 'center', maxWidth: 840, margin: '0 auto'
       }}>
-        {/* Left Side: Slide Text & Value Prop */}
-        <div className="animate-slide-up" key={activeSlide} style={{ maxWidth: 560 }}>
-          <div className="ai-chip" style={{ marginBottom: 20 }}>
-            <SlideIcon size={15} color="var(--deep-evergreen)" />
-            <span>{SLIDES[activeSlide].tag}</span>
-          </div>
+        
+        {/* Main Product Tagline */}
+        <div className="ai-chip animate-fade-in" style={{ marginBottom: 20 }}>
+          <KairoIcon size={16} />
+          <span>AI-POWERED PROBLEM TO SOLUTION & ARTISAN TRUST PLATFORM</span>
+        </div>
 
-          <h1 className="hero-heading" style={{ color: 'var(--deep-evergreen)', marginBottom: 20 }}>
-            {SLIDES[activeSlide].headline}
-          </h1>
+        <h1 className="hero-heading animate-slide-up" style={{ color: 'var(--deep-evergreen)', fontSize: 'clamp(36px, 5.5vw, 54px)', marginBottom: 20, maxWidth: 760 }}>
+          You don’t need to know who you need.
+        </h1>
 
-          <p className="body-text" style={{ color: 'var(--secondary-text)', fontSize: '18px', marginBottom: 24, lineHeight: 1.6 }}>
-            {SLIDES[activeSlide].subhead}
-          </p>
+        <p className="body-text animate-slide-up" style={{ color: 'var(--secondary-text)', fontSize: '19px', marginBottom: 44, maxWidth: 640, lineHeight: 1.6 }}>
+          Just tell KAIRO what is wrong in plain words. Our AI identifies the exact skill required and matches you with trusted local professionals.
+        </p>
 
-          <div style={{
-            background: 'var(--white)',
-            borderLeft: '4px solid var(--warm-gold)',
-            padding: '14px 20px',
-            borderRadius: '0 12px 12px 0',
-            boxShadow: 'var(--shadow-xs)',
-            marginBottom: 32
-          }}>
-            <span style={{ fontSize: '15px', fontWeight: 600, color: 'var(--main-text)' }}>
-              💡 {SLIDES[activeSlide].highlight}
-            </span>
-          </div>
-
-          {/* Dots Indicator */}
-          <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 36 }}>
-            {SLIDES.map((_, idx) => (
-              <button
-                key={idx}
+        {/* Three Explanatory Points Composition (Clean Horizontal / Grid) */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, width: '100%', marginBottom: 44 }}>
+          {EXPLANATORY_POINTS.map((pt, idx) => {
+            const Icon = pt.icon;
+            const isActive = activeSlide === idx;
+            return (
+              <div
+                key={pt.num}
                 onClick={() => setActiveSlide(idx)}
                 style={{
-                  height: 8,
-                  width: activeSlide === idx ? 32 : 10,
-                  borderRadius: 100,
-                  background: activeSlide === idx ? 'var(--kairo-green)' : 'var(--border-color)',
-                  border: 'none',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease'
+                  background: isActive ? 'var(--white)' : 'rgba(255, 255, 255, 0.65)',
+                  border: `1.5px solid ${isActive ? 'var(--kairo-green)' : 'var(--border-color)'}`,
+                  borderRadius: 16,
+                  padding: '24px 20px',
+                  textAlign: 'left',
+                  boxShadow: isActive ? 'var(--shadow-md)' : 'var(--shadow-xs)',
+                  transition: 'all 0.3s ease',
+                  cursor: 'pointer'
                 }}
-              />
-            ))}
-          </div>
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                  <span style={{ fontSize: '24px', fontWeight: 800, color: 'var(--kairo-green)' }}>{pt.num}</span>
+                  <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--mint-mist)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Icon size={18} color="var(--deep-evergreen)" />
+                  </div>
+                </div>
 
-          {/* Action Buttons */}
-          <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
-            <button
-              onClick={onGetStarted}
-              className="btn btn-primary btn-lg"
-              style={{ padding: '16px 36px', fontSize: '18px' }}
-            >
-              Get Started with KAIRO
-              <ArrowRight size={20} />
-            </button>
-          </div>
+                <h3 className="card-heading" style={{ color: 'var(--deep-evergreen)', marginBottom: 8, fontSize: '17px' }}>
+                  {pt.title}
+                </h3>
+                <p className="supporting-text" style={{ fontSize: '14px', margin: 0, lineHeight: 1.55 }}>
+                  {pt.desc}
+                </p>
+              </div>
+            );
+          })}
         </div>
 
-        {/* Right Side: Interactive Visual Card */}
-        <div className="card card-lg animate-fade-in" style={{
-          background: 'var(--white)',
-          boxShadow: 'var(--shadow-xl)',
-          border: '1px solid var(--border-color)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 20
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid var(--border-color)', paddingBottom: 16 }}>
-            <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#EF4444' }} />
-            <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#F59E0B' }} />
-            <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#10B981' }} />
-            <span style={{ fontSize: '13px', color: 'var(--secondary-text)', fontWeight: 600, marginLeft: 'auto' }}>
-              KAIRO Experience Preview
-            </span>
-          </div>
-
-          {/* Mock Problem Input */}
-          <div style={{ background: 'var(--warm-cream)', padding: 16, borderRadius: 12, border: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--secondary-text)', textTransform: 'uppercase', marginBottom: 6 }}>
-              Customer Problem
-            </div>
-            <div style={{ fontSize: '15px', color: 'var(--main-text)', fontWeight: 500 }}>
-              "My generator starts fine, but shuts off automatically after 5 minutes."
-            </div>
-          </div>
-
-          {/* AI Match Output */}
-          <div className="ai-surface" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span className="badge badge-green">
-                <Sparkles size={13} /> KAIRO AI Diagnosis
-              </span>
-              <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--deep-evergreen)' }}>
-                Likely: Generator Repair
-              </span>
-            </div>
-            <p style={{ fontSize: '14px', color: 'var(--main-text)', margin: 0 }}>
-              Identified low-oil sensor trip or carburetor fuel restriction. Recommended 2 verified local technicians nearby.
-            </p>
-          </div>
-
-          {/* Mock Artisan Card Preview */}
-          <div style={{ background: 'var(--white)', border: '1px solid var(--border-color)', borderRadius: 12, padding: 16, display: 'flex', gap: 14, alignItems: 'center' }}>
-            <img
-              src="https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=120&h=120&fit=crop"
-              alt="Artisan"
-              style={{ width: 48, height: 48, borderRadius: 10, objectFit: 'cover' }}
-            />
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--main-text)' }}>Emeka Generator Repairs</div>
-              <div style={{ fontSize: '13px', color: 'var(--secondary-text)' }}>★ 4.8 (34 reviews) · Yaba, Lagos</div>
-            </div>
-            <span className="badge badge-gold">Top Match</span>
-          </div>
-
+        {/* Primary CTA: "Get started" */}
+        <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+          <button
+            onClick={onGetStarted}
+            className="btn btn-primary btn-lg"
+            style={{ padding: '18px 48px', fontSize: '19px', boxShadow: 'var(--shadow-md)' }}
+          >
+            Get started
+            <ArrowRight size={22} />
+          </button>
+          
+          <span className="small-metadata" style={{ color: 'var(--secondary-text)' }}>
+            Join as a Customer to solve a problem, or an Artisan to build your digital identity.
+          </span>
         </div>
+
       </div>
     </div>
   );

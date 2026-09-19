@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Users, Wrench, ShieldCheck, ArrowRight, ChevronLeft, Sparkles, Check } from 'lucide-react';
+import { Users, Wrench, ShieldCheck, ArrowRight, ChevronLeft, Check } from 'lucide-react';
+import KairoIcon, { KairoLogo } from '../components/KairoIcon';
 
 const ROLES = [
   {
     id: 'customer',
     title: 'Customer',
     headline: 'I have a problem to solve',
-    description: 'Find trusted people to solve everyday problems.',
+    description: 'Find someone to solve your problem.',
     Icon: Users,
     features: [
       'Describe problems in text or voice',
@@ -19,7 +20,7 @@ const ROLES = [
     id: 'artisan',
     title: 'Artisan',
     headline: 'I offer skilled services',
-    description: 'Get discovered, showcase your work, and connect with customers.',
+    description: 'Get discovered, build your professional profile, and receive relevant enquiries.',
     Icon: Wrench,
     features: [
       'Showcase portfolio & work samples',
@@ -55,20 +56,15 @@ export default function RolePicker({ onSelectRole, onBack }) {
           <ChevronLeft size={18} /> Back
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--deep-evergreen)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Sparkles size={16} color="var(--warm-gold)" />
-          </div>
-          <span style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--deep-evergreen)', letterSpacing: '-0.03em' }}>
-            KAIRO
-          </span>
-        </div>
+        <KairoLogo size={32} />
       </div>
 
       {/* Main Content */}
       <div className="page-wrapper" style={{ flex: 1, maxWidth: 960, margin: '0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }} className="animate-slide-up">
-          <span className="ai-chip" style={{ marginBottom: 12 }}>ONBOARDING</span>
+          <div className="ai-chip" style={{ marginBottom: 12 }}>
+            <KairoIcon size={14} /> ONBOARDING
+          </div>
           <h1 className="page-heading" style={{ color: 'var(--deep-evergreen)', marginBottom: 12 }}>
             How are you joining KAIRO?
           </h1>
@@ -77,7 +73,7 @@ export default function RolePicker({ onSelectRole, onBack }) {
           </p>
         </div>
 
-        {/* Role Cards Grid */}
+        {/* Visually Balanced Role Cards Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 24, marginBottom: 40 }}>
           {ROLES.map(r => {
             const isSelected = selected === r.id;
@@ -92,6 +88,7 @@ export default function RolePicker({ onSelectRole, onBack }) {
                   display: 'flex',
                   flexDirection: 'column',
                   justify: 'space-between',
+                  minHeight: 440,
                   position: 'relative'
                 }}
               >

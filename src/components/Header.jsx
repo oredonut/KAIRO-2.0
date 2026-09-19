@@ -1,5 +1,6 @@
 import React from 'react';
-import { Home, ClipboardList, Bookmark, User, LogOut, Sparkles } from 'lucide-react';
+import { Home, ClipboardList, Bookmark, User, LogOut } from 'lucide-react';
+import KairoIcon, { KairoLogo } from './KairoIcon';
 
 export default function Header({ role, currentUser, onSignOut, activeTab, onTabChange }) {
   const navItems = [
@@ -8,6 +9,15 @@ export default function Header({ role, currentUser, onSignOut, activeTab, onTabC
     { id: 'saved', label: 'Saved', Icon: Bookmark },
     { id: 'profile', label: 'Profile', Icon: User },
   ];
+
+  const handleNavClick = (tabId) => {
+    if (onTabChange) {
+      onTabChange(tabId);
+    }
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0); // Scroll position reset fix (Point 28)
+    }
+  };
 
   return (
     <>
@@ -26,28 +36,12 @@ export default function Header({ role, currentUser, onSignOut, activeTab, onTabC
       }}>
         <div className="page-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 0 }}>
           
-          {/* Logo & Brand */}
+          {/* Logo & Brand with NEW KairoLogo Symbol */}
           <div
-            onClick={() => onTabChange && onTabChange('home')}
-            style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}
+            onClick={() => handleNavClick('home')}
+            style={{ cursor: 'pointer' }}
           >
-            <div style={{
-              width: 36, height: 36, borderRadius: 10,
-              background: 'var(--deep-evergreen)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(20,83,45,0.25)'
-            }}>
-              <Sparkles size={20} color="var(--warm-gold)" />
-            </div>
-            <span style={{
-              fontFamily: 'var(--font-sans)',
-              fontWeight: 800,
-              fontSize: '1.4rem',
-              color: 'var(--deep-evergreen)',
-              letterSpacing: '-0.03em'
-            }}>
-              KAIRO
-            </span>
+            <KairoLogo size={32} />
           </div>
 
           {/* Desktop Persistent Navigation (Customer) */}
@@ -59,7 +53,7 @@ export default function Header({ role, currentUser, onSignOut, activeTab, onTabC
                 return (
                   <button
                     key={item.id}
-                    onClick={() => onTabChange && onTabChange(item.id)}
+                    onClick={() => handleNavClick(item.id)}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -98,7 +92,7 @@ export default function Header({ role, currentUser, onSignOut, activeTab, onTabC
                 <div style={{ lineHeight: 1.2 }} className="hidden-mobile">
                   <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--main-text)' }}>{currentUser.name}</div>
                   <div style={{ fontSize: '12px', color: 'var(--secondary-text)', textTransform: 'capitalize' }}>
-                    {role === 'customer' ? 'Customer' : role === 'artisan' ? 'Artisan Portal' : 'Admin'}
+                    {role === 'customer' ? 'Customer' : role === 'artisan' ? 'Artisan Workspace' : 'Admin'}
                   </div>
                 </div>
               </div>
@@ -148,7 +142,7 @@ export default function Header({ role, currentUser, onSignOut, activeTab, onTabC
             return (
               <button
                 key={item.id}
-                onClick={() => onTabChange && onTabChange(item.id)}
+                onClick={() => handleNavClick(item.id)}
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
