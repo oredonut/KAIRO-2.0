@@ -237,109 +237,124 @@ export const ARTISANS = [
   },
 ];
 
-// ─── AI Diagnosis ────────────────────────────────────────────────────────
+// ─── Scalable Natural Language AI Problem Interpreter & Artisan Matcher ─────
 export function generateAIDiagnosis(text) {
-  const t = text.toLowerCase();
+  const rawText = (text || '').trim();
+  const t = rawText.toLowerCase();
 
-  // Generator shutdown
-  if ((t.includes('generator') || t.includes('gen')) &&
-      (t.includes('off') || t.includes('stop') || t.includes('shut') || t.includes('go off') || t.includes('cut') || t.includes('start'))) {
-    return {
-      categoryId: 'generator',
-      categoryLabel: 'Generator Repair',
-      understanding: 'Your generator starts normally but shuts down automatically after running for a short time.',
-      likelyFault: 'Possible causes include a low-oil sensor trip, blocked carburetor fuel jet, or air filter restriction.',
-      skills: ['Generator diagnostics', 'Shutdown fault repair', 'Carburetor servicing'],
-      questions: [
-        { id: 'brand', label: 'What brand is your generator?', type: 'chips', options: ['Sumec Firman', 'Tiger', 'Elemax', 'Elepaq', 'Honda', 'Other'] },
-        { id: 'when_started', label: 'When did this start happening?', type: 'chips', options: ['Today', 'This week', 'Longer ago'] },
-      ],
-      matchedArtisans: ['art-1', 'art-2'],
-      matchKey: 'generator_shutdown',
-    };
+  // 1. Dynamic Category & Artisan Requirement Classification
+  let categoryId = 'general';
+  let categoryLabel = 'General Repair & Services';
+  let requiredArtisan = 'Local Service Specialist';
+  let understanding = `You described a service issue: "${rawText}".`;
+  let likelyFault = 'KAIRO has analyzed your request and identified qualified local professionals.';
+
+  if (t.match(/cloth|dress|wear|tear|sew|tailor|waist|pocket|sleeve|alter|zip|zipper|ankara|lace|outfit|pant|trousers|suit|skirt|hem|button/)) {
+    categoryId = 'alteration';
+    categoryLabel = 'Clothing Repair & Alterations';
+    requiredArtisan = 'Tailor & Clothing Alteration Specialist';
+    if (t.includes('tear') || t.includes('pocket') || t.includes('sleeve')) {
+      understanding = 'Your request involves clothing repair (such as tears, seam fixing, or pocket repairs) and size adjustment.';
+      likelyFault = 'Requires fabric restitching, seam reinforcement, or custom tailoring adjustments.';
+    } else if (t.includes('waist') || t.includes('alter') || t.includes('fit') || t.includes('size')) {
+      understanding = 'Your garment needs resizing, waist adjustment, or length alteration for a better fit.';
+      likelyFault = 'Requires measurement check, waist taking in/out, or hem trimming.';
+    } else if (t.includes('zip') || t.includes('zipper')) {
+      understanding = 'Your garment has a broken, stuck, or worn zipper mechanism.';
+      likelyFault = 'Requires zipper slider replacement or installing a new invisible metal zip.';
+    } else {
+      understanding = 'Your clothing requires custom tailoring, fitting adjustments, or garment repair.';
+      likelyFault = 'Specialist tailoring work required for proper garment finish.';
+    }
+  } else if (t.match(/laptop|screen|phone|iphone|samsung|display|crack|battery|charg|tecno|infinix|motherboard|device|computer|macbook|ipad|touch/)) {
+    categoryId = 'device';
+    categoryLabel = 'Device & Phone Repair';
+    requiredArtisan = 'Device & Phone Repair Specialist';
+    if (t.includes('screen') || t.includes('crack') || t.includes('display') || t.includes('glass')) {
+      understanding = 'Your device display screen is cracked or malfunctioning and requires panel repair or replacement.';
+      likelyFault = 'OLED display or glass damage requiring original replacement assembly.';
+    } else if (t.includes('charg') || t.includes('battery') || t.includes('power')) {
+      understanding = 'Your device is having charging difficulties, battery drain, or power power issues.';
+      likelyFault = 'Faulty charging IC, loose USB/Lightning port, or degraded battery cell.';
+    } else {
+      understanding = 'Your electronic device needs hardware diagnostics and component repair.';
+      likelyFault = 'Requires precision micro-soldering or hardware component replacement.';
+    }
+  } else if (t.match(/generator|gen|carburetor|firman|elepaq|tiger|starting|shutdown|go off|stops|light|power|engine|sumec|elemax|oil/)) {
+    categoryId = 'generator';
+    categoryLabel = 'Generator Repair & Servicing';
+    requiredArtisan = 'Generator Repair Technician';
+    if (t.includes('off') || t.includes('shut') || t.includes('stop') || t.includes('cut')) {
+      understanding = 'Your generator starts normally but shuts down automatically after running for a few minutes.';
+      likelyFault = 'Possible low-oil sensor trip, clogged carburetor fuel jet, or overheating protection.';
+    } else if (t.includes('start') || t.includes('dead') || t.includes('won\'t start')) {
+      understanding = 'Your generator is failing to start or turning over without firing.';
+      likelyFault = 'Flooded carburetor, fouled spark plug, weak battery, or ignition coil fault.';
+    } else {
+      understanding = 'Your generator needs routine engine servicing or mechanical fault repair.';
+      likelyFault = 'Carburetor cleaning, oil change, and general engine tuning required.';
+    }
+  } else if (t.match(/plumb|pipe|sink|leak|water|tap|toilet|pump|drain|sewage|block/)) {
+    categoryId = 'plumbing';
+    categoryLabel = 'Plumbing & Pipe Repair';
+    requiredArtisan = 'Plumber & Pipe Specialist';
+    understanding = 'You have a plumbing issue involving water leaks, pipe drainage, or fixture repair.';
+    likelyFault = 'Worn pipe joint seal, valve damage, or drainage line obstruction.';
+  } else if (t.match(/electric|wiring|solar|inverter|breaker|socket|circuit|light|conduit|db board/)) {
+    categoryId = 'electrical';
+    categoryLabel = 'Electrical & Solar Installation';
+    requiredArtisan = 'Electrician & Solar Technician';
+    understanding = 'Your request involves electrical wiring, power distribution, or solar inverter systems.';
+    likelyFault = 'Tripped circuit breaker, loose wiring connection, or inverter system fault.';
   }
 
-  // Generator not starting
-  if (t.includes('generator') && (t.includes('start') || t.includes('on') || t.includes('dead'))) {
-    return {
-      categoryId: 'generator',
-      categoryLabel: 'Generator Repair',
-      understanding: 'Your generator will not start or is having difficulty starting.',
-      likelyFault: 'Possible causes include a dead battery, flooded carburetor, ignition fault, or fuel starvation.',
-      skills: ['Generator diagnostics', 'Starting system repair', 'Fuel system servicing'],
-      questions: [
-        { id: 'brand', label: 'What brand is your generator?', type: 'chips', options: ['Sumec Firman', 'Tiger', 'Elemax', 'Elepaq', 'Honda', 'Other'] },
-        { id: 'last_service', label: 'When was it last serviced?', type: 'chips', options: ['Recently', 'Over 6 months ago', 'Never', 'Not sure'] },
-      ],
-      matchedArtisans: ['art-1', 'art-2'],
-      matchKey: 'generator_shutdown',
-    };
+  // 2. Dynamic Artisan Matching Algorithm (Rank registered artisans by relevance to user text)
+  const queryWords = t.split(/\W+/).filter(w => w.length > 2);
+  
+  const matchedArtisansWithScores = ARTISANS.map(artisan => {
+    let score = 0;
+
+    // Category match
+    if (artisan.category === categoryId) score += 50;
+
+    // Search keywords in artisan bio, skills, brands, services, work samples
+    const artisanText = [
+      artisan.name,
+      artisan.categoryLabel,
+      artisan.bio,
+      ...(artisan.skills || []),
+      ...(artisan.brands || []),
+      ...(artisan.services || []),
+      ...(artisan.workSamples ? artisan.workSamples.map(w => `${w.problem} ${w.work} ${w.result}`) : [])
+    ].join(' ').toLowerCase();
+
+    queryWords.forEach(word => {
+      if (artisanText.includes(word)) score += 10;
+    });
+
+    return { id: artisan.id, score };
+  });
+
+  // Sort by score descending
+  matchedArtisansWithScores.sort((a, b) => b.score - a.score);
+  
+  // Pick top matched artisans (or fallback to default category artisans if all 0)
+  let matchedIds = matchedArtisansWithScores.filter(a => a.score > 0).map(a => a.id);
+  if (matchedIds.length === 0) {
+    matchedIds = ARTISANS.filter(a => a.category === categoryId).map(a => a.id);
+  }
+  if (matchedIds.length === 0) {
+    matchedIds = ['art-4', 'art-5', 'art-3', 'art-1']; // Fallback general list
   }
 
-  // Screen / phone
-  if (t.includes('screen') || (t.includes('phone') && t.includes('crack')) || t.includes('display')) {
-    return {
-      categoryId: 'device',
-      categoryLabel: 'Device Repair',
-      understanding: 'Your phone screen is cracked or damaged and may need replacement.',
-      likelyFault: 'Screen glass or OLED display damage — typically requires panel replacement.',
-      skills: ['Screen replacement', 'Display repair'],
-      questions: [
-        { id: 'brand', label: 'What phone brand is it?', type: 'chips', options: ['iPhone', 'Samsung', 'Tecno', 'Infinix', 'Other'] },
-        { id: 'touch', label: 'Is the touch still responding?', type: 'chips', options: ['Yes', 'Partially', 'Not at all'] },
-      ],
-      matchedArtisans: ['art-3'],
-      matchKey: 'device_screen',
-    };
-  }
-
-  // Charging
-  if (t.includes('charg') || (t.includes('phone') && (t.includes('battery') || t.includes('power')))) {
-    return {
-      categoryId: 'device',
-      categoryLabel: 'Device Repair',
-      understanding: 'Your phone is not charging or has battery problems.',
-      likelyFault: 'Could be a faulty charging port, damaged charging cable, or degraded battery.',
-      skills: ['Charging port repair', 'Battery replacement'],
-      questions: [
-        { id: 'brand', label: 'What phone brand is it?', type: 'chips', options: ['iPhone', 'Samsung', 'Tecno', 'Infinix', 'Other'] },
-        { id: 'charges_sometimes', label: 'Does it charge at a certain angle?', type: 'chips', options: ['Yes, at an angle', 'Never charges', 'Charges but slowly'] },
-      ],
-      matchedArtisans: ['art-3'],
-      matchKey: 'device_screen',
-    };
-  }
-
-  // Zip / alteration
-  if (t.includes('zip') || t.includes('zipper') || t.includes('dress') || t.includes('waist') || t.includes('cloth') || t.includes('alter') || t.includes('lace')) {
-    return {
-      categoryId: 'alteration',
-      categoryLabel: 'Clothing Alterations',
-      understanding: 'Your clothing needs alteration work — likely a zip repair or size adjustment.',
-      likelyFault: 'Worn zipper mechanism or waist resizing needed.',
-      skills: ['Zip replacement', 'Waist adjustment'],
-      questions: [
-        { id: 'garment', label: 'What type of clothing is it?', type: 'chips', options: ['Ankara dress', 'Lace gown', 'Suit/Blazer', 'Trousers', 'Other'] },
-        { id: 'deadline', label: 'When do you need it ready?', type: 'chips', options: ['Today', 'Tomorrow', 'This week', 'No rush'] },
-      ],
-      matchedArtisans: ['art-4', 'art-5'],
-      matchKey: 'alteration_zip',
-    };
-  }
-
-  // Default: general alteration
   return {
-    categoryId: 'alteration',
-    categoryLabel: 'Clothing Alterations',
-    understanding: 'Your clothing needs alteration or repair work.',
-    likelyFault: 'Exact service to be confirmed by the artisan after reviewing the garment.',
-    skills: ['General alterations', 'Repair work'],
-    questions: [
-      { id: 'garment', label: 'What type of clothing is it?', type: 'chips', options: ['Ankara dress', 'Lace gown', 'Suit', 'Trousers', 'Other'] },
-      { id: 'deadline', label: 'When do you need it?', type: 'chips', options: ['Today', 'Tomorrow', 'This week'] },
-    ],
-    matchedArtisans: ['art-4', 'art-5'],
-    matchKey: 'alteration_zip',
+    originalText: rawText,
+    categoryId,
+    categoryLabel,
+    requiredArtisan,
+    understanding,
+    likelyFault,
+    matchedArtisans: matchedIds,
   };
 }
 

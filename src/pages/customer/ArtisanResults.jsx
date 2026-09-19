@@ -126,11 +126,12 @@ export default function ArtisanResults({
 
 // ── Standardized Artisan Result Card ──────────────────────────────────────────
 function ArtisanResultCard({ artisan, request, onViewProfile, onEnquire }) {
-  // Grounded evidence points for "Why KAIRO recommends"
+  // Grounded evidence points for "Why KAIRO recommends" dynamically generated from request
+  const categoryTitle = request?.diagnosis?.categoryLabel || artisan.categoryLabel || 'Service';
   const defaultEvidence = [
-    `Handles ${artisan.category === 'generator' ? 'generator starting and shutdown' : 'device & fitting'} problems`,
+    `Handles ${categoryTitle} requests matching your description`,
     `${artisan.workSamplesCount || 18} relevant work samples`,
-    `${artisan.yearsExp || 7} years of experience`,
+    `${artisan.yearsExp || 7} years of experience in trade`,
     `${artisan.availability || 'Available today'}`,
     `Serves ${artisan.location || 'your area'}`,
     `${artisan.reviewCount || 34} customer reviews`

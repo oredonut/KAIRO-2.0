@@ -2,10 +2,10 @@ import React from 'react';
 import { Sparkles, ArrowRight, Zap, Smartphone, Scissors, Shirt, ChevronRight, ShieldCheck, CheckCircle2, Clock, Image as ImageIcon, Star } from 'lucide-react';
 
 const COMMON_PROBLEMS = [
-  { text: 'Generator keeps going off', category: 'generator' },
-  { text: 'Phone screen is damaged', category: 'device' },
-  { text: 'My clothes don\'t fit properly', category: 'alteration' },
-  { text: 'My device won\'t turn on', category: 'device' },
+  { text: 'I want to repair my clothes. There is a large tear near the pocket and I need the waist made smaller.' },
+  { text: 'My laptop screen is cracked and I need it replaced.' },
+  { text: 'My sink has been leaking underneath for two days.' },
+  { text: 'My generator starts normally but shuts down after running for a few minutes.' },
 ];
 
 export default function CustomerHome({
