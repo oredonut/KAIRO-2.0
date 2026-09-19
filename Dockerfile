@@ -1,32 +1,21 @@
-# Stage 1: Build
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+
+RUN npm install
 
 COPY tsconfig.json ./
 COPY src ./src
 
 RUN npm run build
 
-# Stage 2: Production
-FROM node:20-alpine AS runner
-
-WORKDIR /app
-
-ENV NODE_ENV=production
-ENV PORT=5000
-
-COPY package*.json ./
-RUN npm ci --only=production
-
-COPY --from=builder /app/dist ./dist
-
-# Create uploads directory for media fallback
 RUN mkdir -p uploads
 
 EXPOSE 5000
+
+ENV NODE_ENV=production
+ENV PORT=5000
 
 CMD ["node", "dist/server.js"]
