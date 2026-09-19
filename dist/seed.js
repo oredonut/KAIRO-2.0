@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.seedDatabase = seedDatabase;
-const firebase_js_1 = require("./config/firebase.js");
+const firebase_1 = require("./config/firebase");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 async function seedDatabase() {
     console.log('[Seed] Populating initial categories, skills, sample artisans, and work portfolios into Firestore...');
@@ -44,7 +44,7 @@ async function seedDatabase() {
         },
     ];
     for (const cat of categories) {
-        await firebase_js_1.db.collection('categories').doc(cat.id).set(cat);
+        await firebase_1.db.collection('categories').doc(cat.id).set(cat);
     }
     // 2. Skills
     const skills = [
@@ -57,7 +57,7 @@ async function seedDatabase() {
         { id: 'sk_port_rep', name: 'Charging port repair', slug: 'charging_port_repair', categoryId: 'cat_device' },
     ];
     for (const sk of skills) {
-        await firebase_js_1.db.collection('skills').doc(sk.id).set(sk);
+        await firebase_1.db.collection('skills').doc(sk.id).set(sk);
     }
     const passHash = await bcryptjs_1.default.hash('Password123!', 10);
     // 3. Admin User
@@ -72,7 +72,7 @@ async function seedDatabase() {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
     };
-    await firebase_js_1.db.collection('users').doc(adminUser.id).set(adminUser);
+    await firebase_1.db.collection('users').doc(adminUser.id).set(adminUser);
     // 4. Sample Professional 1: Emeka Generator Works (matching art-1 in frontend mockData)
     const profUser1 = {
         id: 'usr_emeka',
@@ -90,7 +90,7 @@ async function seedDatabase() {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
     };
-    await firebase_js_1.db.collection('users').doc(profUser1.id).set(profUser1);
+    await firebase_1.db.collection('users').doc(profUser1.id).set(profUser1);
     const profProfile1 = {
         id: 'art-1',
         userId: 'usr_emeka',
@@ -117,7 +117,7 @@ async function seedDatabase() {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
     };
-    await firebase_js_1.db.collection('professional_profiles').doc(profProfile1.id).set(profProfile1);
+    await firebase_1.db.collection('professional_profiles').doc(profProfile1.id).set(profProfile1);
     // Work sample for Emeka
     const sample1 = {
         id: 'ws-1',
@@ -131,7 +131,7 @@ async function seedDatabase() {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
     };
-    await firebase_js_1.db.collection('work_samples').doc(sample1.id).set(sample1);
+    await firebase_1.db.collection('work_samples').doc(sample1.id).set(sample1);
     // 5. Sample Professional 2: Ada Alterations Studio (matching art-5 in frontend mockData)
     const profUser2 = {
         id: 'usr_ada',
@@ -149,7 +149,7 @@ async function seedDatabase() {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
     };
-    await firebase_js_1.db.collection('users').doc(profUser2.id).set(profUser2);
+    await firebase_1.db.collection('users').doc(profUser2.id).set(profUser2);
     const profProfile2 = {
         id: 'art-5',
         userId: 'usr_ada',
@@ -176,9 +176,9 @@ async function seedDatabase() {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
     };
-    await firebase_js_1.db.collection('professional_profiles').doc(profProfile2.id).set(profProfile2);
+    await firebase_1.db.collection('professional_profiles').doc(profProfile2.id).set(profProfile2);
     console.log('[Seed] Database successfully populated with frontend-aligned categories, skills, and mock professionals.');
 }
-if (process.argv[1]?.endsWith('seed.ts')) {
+if (process.argv[1]?.includes('seed')) {
     seedDatabase().catch(console.error);
 }

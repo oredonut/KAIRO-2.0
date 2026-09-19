@@ -1,4 +1,4 @@
-import { db } from './config/firebase.js';
+import { db } from './config/firebase';
 import bcrypt from 'bcryptjs';
 
 export async function seedDatabase() {
@@ -187,6 +187,6 @@ export async function seedDatabase() {
   console.log('[Seed] Database successfully populated with frontend-aligned categories, skills, and mock professionals.');
 }
 
-if (process.argv[1]?.endsWith('seed.ts')) {
+if (process.argv[1]?.includes('seed')) {
   seedDatabase().catch(console.error);
 }
