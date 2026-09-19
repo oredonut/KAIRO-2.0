@@ -35,10 +35,18 @@ async function seedDatabase() {
             createdAt: new Date().toISOString(),
         },
         {
-            id: 'cat_tailor',
-            slug: 'tailor',
-            name: 'Tailor & Fashion Design',
-            description: 'Bespoke suit making, native attire tailoring, and custom dress design.',
+            id: 'cat_plumbing',
+            slug: 'plumbing',
+            name: 'Plumbing & Pipe Repair',
+            description: 'Water leak detection, pipe replacement, drain unclogging, and pump maintenance.',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+        },
+        {
+            id: 'cat_electrical',
+            slug: 'electrical',
+            name: 'Electrical & Solar Installation',
+            description: 'House wiring, circuit breaker troubleshooting, solar inverter installation, and lighting.',
             isActive: true,
             createdAt: new Date().toISOString(),
         },
@@ -55,6 +63,8 @@ async function seedDatabase() {
         { id: 'sk_zip_rep', name: 'Zip replacement', slug: 'zip_replacement', categoryId: 'cat_alteration' },
         { id: 'sk_screen_rep', name: 'Screen replacement', slug: 'screen_replacement', categoryId: 'cat_device' },
         { id: 'sk_port_rep', name: 'Charging port repair', slug: 'charging_port_repair', categoryId: 'cat_device' },
+        { id: 'sk_leak_rep', name: 'Pipe leak repair', slug: 'pipe_leak_repair', categoryId: 'cat_plumbing' },
+        { id: 'sk_solar_inst', name: 'Solar inverter installation', slug: 'solar_inverter_installation', categoryId: 'cat_electrical' },
     ];
     for (const sk of skills) {
         await firebase_1.db.collection('skills').doc(sk.id).set(sk);
@@ -177,6 +187,96 @@ async function seedDatabase() {
         updatedAt: new Date().toISOString(),
     };
     await firebase_1.db.collection('professional_profiles').doc(profProfile2.id).set(profProfile2);
+    // 6. Sample Professional 3: Ojo Plumbing & Pipe Services
+    const profUser3 = {
+        id: 'usr_ojo',
+        email: 'ojo@plumbing.com',
+        passwordHash: passHash,
+        firstName: 'Ojo',
+        lastName: 'Adeleke',
+        phone: '+2348033334444',
+        avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&auto=format',
+        role: 'PROFESSIONAL',
+        location: 'Lekki, Lagos',
+        latitude: 6.4698,
+        longitude: 3.5852,
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+    };
+    await firebase_1.db.collection('users').doc(profUser3.id).set(profUser3);
+    const profProfile3 = {
+        id: 'art-6',
+        userId: 'usr_ojo',
+        categoryId: 'plumbing',
+        displayName: 'Ojo Plumbing & Pipe Services',
+        bio: 'Expert plumber with 8 years of experience fixing leaks, unclogging drains, and installing water pump systems across Lekki & Victoria Island.',
+        experienceYears: 8,
+        skills: ['Pipe leak repair', 'Drain unclogging', 'Water pump installation', 'Tap replacement', 'Bathroom fitting'],
+        services: ['Leak Repair', 'Drainage Unclogging', 'Water Pump Servicing'],
+        brands: ['PPR', 'PVC', 'Standard Plumbing Fixtures'],
+        location: 'Lekki, Lagos',
+        latitude: 6.4698,
+        longitude: 3.5852,
+        serviceRadiusKm: 30,
+        availabilityStatus: 'AVAILABLE',
+        profileCompleteness: 92,
+        isPublished: true,
+        isVerified: true,
+        verificationLevel: 'DOCUMENT_VERIFIED',
+        isPro: true,
+        ratingAverage: 4.8,
+        reviewCount: 29,
+        completedJobsCount: 64,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+    };
+    await firebase_1.db.collection('professional_profiles').doc(profProfile3.id).set(profProfile3);
+    // 7. Sample Professional 4: Kazeem Electrical & Solar Works
+    const profUser4 = {
+        id: 'usr_kazeem',
+        email: 'kazeem@electrical.com',
+        passwordHash: passHash,
+        firstName: 'Kazeem',
+        lastName: 'Bello',
+        phone: '+2348022225555',
+        avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&auto=format',
+        role: 'PROFESSIONAL',
+        location: 'Yaba, Lagos',
+        latitude: 6.5181,
+        longitude: 3.3831,
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+    };
+    await firebase_1.db.collection('users').doc(profUser4.id).set(profUser4);
+    const profProfile4 = {
+        id: 'art-7',
+        userId: 'usr_kazeem',
+        categoryId: 'electrical',
+        displayName: 'Kazeem Electrical & Solar Works',
+        bio: 'Certified electrician specializing in household wiring, DB box troubleshooting, and solar inverter installations in Yaba and Surulere.',
+        experienceYears: 9,
+        skills: ['Solar inverter installation', 'Conduit wiring', 'Circuit breaker repair', 'Short circuit tracing', 'Light fixture fitting'],
+        services: ['Solar Inverter Setup', 'House Conduit Wiring', 'Circuit Breaker Repair'],
+        brands: ['Schneider', 'Felicity Solar', 'Luminous', 'Must Solar'],
+        location: 'Yaba, Lagos',
+        latitude: 6.5181,
+        longitude: 3.3831,
+        serviceRadiusKm: 25,
+        availabilityStatus: 'AVAILABLE',
+        profileCompleteness: 95,
+        isPublished: true,
+        isVerified: true,
+        verificationLevel: 'DOCUMENT_VERIFIED',
+        isPro: true,
+        ratingAverage: 4.9,
+        reviewCount: 41,
+        completedJobsCount: 78,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+    };
+    await firebase_1.db.collection('professional_profiles').doc(profProfile4.id).set(profProfile4);
     console.log('[Seed] Database successfully populated with frontend-aligned categories, skills, and mock professionals.');
 }
 if (process.argv[1]?.includes('seed')) {

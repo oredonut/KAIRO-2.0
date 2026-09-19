@@ -191,13 +191,13 @@ export class AIService {
     }
 
     // Zip / Alteration
-    if (textLower.includes('zip') || textLower.includes('zipper') || textLower.includes('dress') || textLower.includes('waist') || textLower.includes('cloth') || textLower.includes('alter') || textLower.includes('lace')) {
+    if (textLower.match(/cloth|dress|wear|tear|sew|tailor|waist|pocket|sleeve|alter|zip|zipper|ankara|lace|outfit|pant|trousers|suit|skirt|hem|button/)) {
       return {
         categorySlug: 'alteration',
-        categoryLabel: 'Clothing Alterations',
-        problemSummary: 'Your clothing needs alteration work — likely a zip repair or size adjustment.',
-        understanding: 'Your clothing needs alteration work — likely a zip repair or size adjustment.',
-        likelyFault: 'Worn zipper mechanism or waist resizing needed.',
+        categoryLabel: 'Clothing Repair & Alterations',
+        problemSummary: 'Your clothing needs alteration or garment repair work.',
+        understanding: 'Your garment needs resizing, waist adjustment, zipper replacement, or seam repair.',
+        likelyFault: 'Worn zipper mechanism, waist fitting adjustment, or seam restitching required.',
         requiredSkills: ['Zip replacement', 'Waist adjustment', 'Length alteration'],
         questions: [
           { id: 'garment', label: 'What type of clothing is it?', type: 'chips', options: ['Ankara dress', 'Lace gown', 'Suit/Blazer', 'Trousers', 'Other'] },
@@ -209,6 +209,48 @@ export class AIService {
         urgency: 'MEDIUM',
         possibleServiceTypes: ['Tailoring', 'Zipper Replacement'],
         aiConfidence: 0.90,
+      };
+    }
+
+    // Plumbing
+    if (textLower.match(/plumb|pipe|sink|leak|water|tap|toilet|pump|drain|sewage|block/)) {
+      return {
+        categorySlug: 'plumbing',
+        categoryLabel: 'Plumbing & Pipe Repair',
+        problemSummary: 'Water leak, drainage block, or plumbing fixture malfunction.',
+        understanding: 'You have a plumbing issue involving water leaks, pipe drainage, or fixture repair.',
+        likelyFault: 'Worn pipe joint seal, valve damage, or drainage line obstruction.',
+        requiredSkills: ['Pipe leak repair', 'Drain unclogging', 'Water pump installation'],
+        questions: [
+          { id: 'type', label: 'Where is the leak or issue located?', type: 'chips', options: ['Kitchen sink', 'Bathroom toilet', 'Main water pipe', 'Pumping machine'] },
+        ],
+        missingInformation: [
+          { key: 'type', question: 'Where is the leak or issue located?' },
+        ],
+        urgency: 'HIGH',
+        possibleServiceTypes: ['Leak Repair', 'Pipe Replacement'],
+        aiConfidence: 0.93,
+      };
+    }
+
+    // Electrical / Solar
+    if (textLower.match(/electric|wiring|solar|inverter|breaker|socket|circuit|light|conduit|db board/)) {
+      return {
+        categorySlug: 'electrical',
+        categoryLabel: 'Electrical & Solar Installation',
+        problemSummary: 'Electrical circuit issue, power distribution fault, or solar inverter system.',
+        understanding: 'Your request involves electrical wiring, power distribution, or solar inverter systems.',
+        likelyFault: 'Tripped circuit breaker, loose wiring connection, or inverter system fault.',
+        requiredSkills: ['Solar inverter installation', 'Conduit wiring', 'Circuit breaker repair'],
+        questions: [
+          { id: 'issue', label: 'What electrical component is affected?', type: 'chips', options: ['Circuit breaker / DB box', 'Wall socket', 'Solar Inverter', 'Full house wiring'] },
+        ],
+        missingInformation: [
+          { key: 'issue', question: 'What electrical component is affected?' },
+        ],
+        urgency: 'HIGH',
+        possibleServiceTypes: ['Electrical Wiring', 'Solar Installation'],
+        aiConfidence: 0.94,
       };
     }
 

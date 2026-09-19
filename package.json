@@ -7,8 +7,8 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "build": "tsc",
-    "prestart": "tsc",
+    "build": "npx tsc",
+    "prestart": "npm run build",
     "start": "node dist/server.js",
     "dev": "npx ts-node-dev --respawn --transpile-only src/server.ts",
     "seed": "npm run build && node dist/seed.js",
