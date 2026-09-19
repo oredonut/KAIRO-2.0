@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "KAIRO Backend Infrastructure - AI-powered local problem-solving and skills-to-income platform",
   "main": "dist/server.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
