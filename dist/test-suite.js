@@ -3,8 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const server_js_1 = __importDefault(require("./server.js"));
-const seed_js_1 = require("./seed.js");
+const server_1 = __importDefault(require("./server"));
+const seed_1 = require("./seed");
 let server;
 const PORT = 5001;
 const BASE_URL = `http://localhost:${PORT}/api`;
@@ -13,11 +13,11 @@ async function runTests() {
     console.log('🧪 RUNNING KAIRO BACKEND E2E TEST SUITE');
     console.log('=======================================================\n');
     // Start server on port 5001
-    server = server_js_1.default.listen(PORT);
+    server = server_1.default.listen(PORT);
     console.log(`[Test Suite] Temporary test server started on ${PORT}`);
     try {
         // 1. Seed Database
-        await (0, seed_js_1.seedDatabase)();
+        await (0, seed_1.seedDatabase)();
         console.log('✅ PASS: Seed Database');
         // 2. Health check
         const healthRes = await fetch(`http://localhost:${PORT}/health`);

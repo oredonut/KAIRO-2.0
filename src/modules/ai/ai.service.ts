@@ -1,18 +1,29 @@
 import { z } from 'zod';
 import { db } from '../../config/firebase.js';
-import { Category, Skill } from '../../types/index.js';
+import { Category } from '../../types/index.js';
 
 // Zod Schema for Problem Analysis output (Requirement #16)
 export const ProblemAnalysisSchema = z.object({
   categorySlug: z.string().min(1),
+  categoryLabel: z.string().default('Technical Repair'),
   problemSummary: z.string().min(5),
+  understanding: z.string().default(''),
+  likelyFault: z.string().default(''),
   requiredSkills: z.array(z.string()).min(1),
+  questions: z.array(
+    z.object({
+      id: z.string(),
+      label: z.string(),
+      type: z.string().default('chips'),
+      options: z.array(z.string()).default([]),
+    })
+  ).default([]),
   missingInformation: z.array(
     z.object({
       key: z.string(),
       question: z.string(),
     })
-  ),
+  ).default([]),
   urgency: z.enum(['LOW', 'MEDIUM', 'HIGH', 'EMERGENCY']).default('MEDIUM'),
   possibleServiceTypes: z.array(z.string()).default([]),
   aiConfidence: z.number().min(0).max(1).default(0.85),
@@ -37,8 +48,14 @@ export class AIService {
    */
   static async analyzeProblem(rawInput: string): Promise<{
     category: Partial<Category>;
+    categoryId: string;
+    categoryLabel: string;
     problemSummary: string;
+    understanding: string;
+    likelyFault: string;
     requiredSkills: string[];
+    skills: string[];
+    questions: Array<{ id: string; label: string; type: string; options: string[] }>;
     missingInformation: Array<{ key: string; question: string }>;
     urgency: string;
     aiConfidence: number;
@@ -49,7 +66,7 @@ export class AIService {
     const maxAttempts = 2;
     let parsedResult: ProblemAnalysisOutput | null = null;
 
-    // Fetch existing categories and skills from Firestore database for context
+    // Fetch existing categories from Firestore for context
     const categoriesSnapshot = await db.collection('categories').get();
     const existingCategories: Category[] = categoriesSnapshot.docs.map((doc: any) => doc.data());
 
@@ -69,18 +86,18 @@ export class AIService {
       }
     }
 
-    // Controlled fallback if LLM calls or validations fail (Requirement #16)
+    // Controlled fallback if LLM calls or validations fail
     if (!parsedResult) {
       console.log('[AI Fallback] Returning controlled fallback response for problem analysis.');
       parsedResult = AIService.generateProblemFallback(rawInput, existingCategories);
     }
 
-    // Match or create category object from parsed slug
-    let targetCategory = existingCategories.find((c) => c.slug === parsedResult!.categorySlug);
+    // Match category
+    let targetCategory = existingCategories.find((c) => c.slug === parsedResult!.categorySlug || c.id.includes(parsedResult!.categorySlug));
     if (!targetCategory) {
       targetCategory = existingCategories[0] || {
-        id: 'cat_generator_repair',
-        slug: 'generator_repair',
+        id: 'cat_generator',
+        slug: 'generator',
         name: 'Generator Repair',
         description: 'Generator diagnostics & repair services',
         isActive: true,
@@ -88,10 +105,18 @@ export class AIService {
       };
     }
 
+    const categoryId = targetCategory.slug || parsedResult.categorySlug;
+
     return {
       category: targetCategory,
+      categoryId,
+      categoryLabel: parsedResult.categoryLabel || targetCategory.name,
       problemSummary: parsedResult.problemSummary,
+      understanding: parsedResult.understanding || parsedResult.problemSummary,
+      likelyFault: parsedResult.likelyFault,
       requiredSkills: parsedResult.requiredSkills,
+      skills: parsedResult.requiredSkills,
+      questions: parsedResult.questions,
       missingInformation: parsedResult.missingInformation,
       urgency: parsedResult.urgency,
       aiConfidence: parsedResult.aiConfidence,
@@ -114,22 +139,28 @@ export class AIService {
       console.warn('[AI Profile Parser Error] Falling back to structured heuristic parser:', err);
     }
 
-    // Fallback heuristic profile parser
     return AIService.generateProfileFallback(rawDescription);
   }
 
   private static async callLlmProblemAnalyzer(input: string, categories: Category[]) {
     const textLower = input.toLowerCase();
 
-    // Context aware heuristic simulator / LLM provider wrapper
-    if (textLower.includes('generator') || textLower.includes('tiger') || textLower.includes('sumec') || textLower.includes('start')) {
+    // Generator shutdown / starting
+    if (textLower.includes('generator') || textLower.includes('tiger') || textLower.includes('sumec') || textLower.includes('elepaq') || textLower.includes('start')) {
       return {
-        categorySlug: 'generator_repair',
-        problemSummary: 'Generator starts but shuts down after several minutes.',
-        requiredSkills: ['generator_diagnostics', 'generator_starting_problems'],
+        categorySlug: 'generator',
+        categoryLabel: 'Generator Repair',
+        problemSummary: 'Your generator starts normally but shuts down automatically after running for a short time.',
+        understanding: 'Your generator starts normally but shuts down automatically after running for a short time.',
+        likelyFault: 'Possible causes include a low-oil sensor trip, blocked carburetor fuel jet, or air filter restriction.',
+        requiredSkills: ['Generator diagnostics', 'Shutdown fault repair', 'Carburetor servicing'],
+        questions: [
+          { id: 'brand', label: 'What brand is your generator?', type: 'chips', options: ['Sumec Firman', 'Tiger', 'Elemax', 'Elepaq', 'Honda', 'Other'] },
+          { id: 'when_started', label: 'When did this start happening?', type: 'chips', options: ['Today', 'This week', 'Longer ago'] },
+        ],
         missingInformation: [
-          { key: 'generator_model', question: 'What is the model of your generator?' },
-          { key: 'fuel_type', question: 'Is it petrol or diesel powered?' },
+          { key: 'brand', question: 'What brand is your generator?' },
+          { key: 'when_started', question: 'When did this start happening?' },
         ],
         urgency: 'HIGH',
         possibleServiceTypes: ['Generator Troubleshooting', 'Carburetor Cleaning'],
@@ -137,13 +168,43 @@ export class AIService {
       };
     }
 
-    if (textLower.includes('cloth') || textLower.includes('dress') || textLower.includes('zip') || textLower.includes('alter')) {
+    // Phone / Device Screen or Battery
+    if (textLower.includes('screen') || textLower.includes('phone') || textLower.includes('charg') || textLower.includes('battery')) {
       return {
-        categorySlug: 'clothing_alteration',
-        problemSummary: 'Garment adjustment or zipper repair required.',
-        requiredSkills: ['waist_alteration', 'zip_replacement'],
+        categorySlug: 'device',
+        categoryLabel: 'Device Repair',
+        problemSummary: 'Your phone screen is cracked or damaged and may need replacement.',
+        understanding: 'Your phone screen is cracked or damaged and may need replacement.',
+        likelyFault: 'Screen glass or OLED display damage — typically requires panel replacement.',
+        requiredSkills: ['Screen replacement', 'Display repair', 'Charging port repair'],
+        questions: [
+          { id: 'brand', label: 'What phone brand is it?', type: 'chips', options: ['iPhone', 'Samsung', 'Tecno', 'Infinix', 'Other'] },
+          { id: 'touch', label: 'Is the touch still responding?', type: 'chips', options: ['Yes', 'Partially', 'Not at all'] },
+        ],
         missingInformation: [
-          { key: 'garment_type', question: 'What type of clothing item requires alteration?' },
+          { key: 'brand', question: 'What phone brand is it?' },
+        ],
+        urgency: 'MEDIUM',
+        possibleServiceTypes: ['Screen Replacement', 'Port Repair'],
+        aiConfidence: 0.92,
+      };
+    }
+
+    // Zip / Alteration
+    if (textLower.includes('zip') || textLower.includes('zipper') || textLower.includes('dress') || textLower.includes('waist') || textLower.includes('cloth') || textLower.includes('alter') || textLower.includes('lace')) {
+      return {
+        categorySlug: 'alteration',
+        categoryLabel: 'Clothing Alterations',
+        problemSummary: 'Your clothing needs alteration work — likely a zip repair or size adjustment.',
+        understanding: 'Your clothing needs alteration work — likely a zip repair or size adjustment.',
+        likelyFault: 'Worn zipper mechanism or waist resizing needed.',
+        requiredSkills: ['Zip replacement', 'Waist adjustment', 'Length alteration'],
+        questions: [
+          { id: 'garment', label: 'What type of clothing is it?', type: 'chips', options: ['Ankara dress', 'Lace gown', 'Suit/Blazer', 'Trousers', 'Other'] },
+          { id: 'deadline', label: 'When do you need it ready?', type: 'chips', options: ['Today', 'Tomorrow', 'This week', 'No rush'] },
+        ],
+        missingInformation: [
+          { key: 'garment', question: 'What type of clothing is it?' },
         ],
         urgency: 'MEDIUM',
         possibleServiceTypes: ['Tailoring', 'Zipper Replacement'],
@@ -151,44 +212,42 @@ export class AIService {
       };
     }
 
-    if (textLower.includes('phone') || textLower.includes('screen') || textLower.includes('battery') || textLower.includes('charging')) {
-      return {
-        categorySlug: 'device_repair',
-        problemSummary: 'Mobile device screen or hardware component issue.',
-        requiredSkills: ['screen_replacement', 'charging_port_repair'],
-        missingInformation: [
-          { key: 'device_brand', question: 'What is the brand and model of your device?' },
-        ],
-        urgency: 'MEDIUM',
-        possibleServiceTypes: ['Screen Repair', 'Port Diagnostics'],
-        aiConfidence: 0.92,
-      };
-    }
-
-    // Default structured LLM response template
+    // Default
     return {
-      categorySlug: categories[0]?.slug || 'generator_repair',
+      categorySlug: 'alteration',
+      categoryLabel: 'Clothing Alterations',
       problemSummary: input,
-      requiredSkills: ['general_diagnostics'],
+      understanding: input,
+      likelyFault: 'Exact service to be confirmed by the artisan after reviewing details.',
+      requiredSkills: ['General alterations', 'Repair work'],
+      questions: [
+        { id: 'garment', label: 'What type of clothing is it?', type: 'chips', options: ['Ankara dress', 'Lace gown', 'Suit', 'Trousers', 'Other'] },
+      ],
       missingInformation: [
-        { key: 'additional_details', question: 'Can you provide more details about the issue?' },
+        { key: 'garment', question: 'What type of clothing is it?' },
       ],
       urgency: 'MEDIUM',
-      possibleServiceTypes: ['General Repair'],
+      possibleServiceTypes: ['General Technical Service'],
       aiConfidence: 0.75,
     };
   }
 
   private static generateProblemFallback(input: string, categories: Category[]): ProblemAnalysisOutput {
     return {
-      categorySlug: categories[0]?.slug || 'generator_repair',
+      categorySlug: 'generator',
+      categoryLabel: 'Generator Repair',
       problemSummary: input.length > 80 ? input.substring(0, 80) + '...' : input,
-      requiredSkills: ['general_diagnostics'],
+      understanding: input,
+      likelyFault: 'General maintenance required.',
+      requiredSkills: ['General diagnostics'],
+      questions: [
+        { id: 'details', label: 'Can you share a bit more detail?', type: 'chips', options: ['Yes', 'Not sure'] },
+      ],
       missingInformation: [
-        { key: 'problem_details', question: 'Could you share a bit more detail on what happens when the issue occurs?' },
+        { key: 'details', question: 'Can you share a bit more detail?' },
       ],
       urgency: 'MEDIUM',
-      possibleServiceTypes: ['General Technical Service'],
+      possibleServiceTypes: ['General Repair'],
       aiConfidence: 0.60,
     };
   }
@@ -198,39 +257,29 @@ export class AIService {
 
     if (textLower.includes('generator')) {
       return {
-        suggestedCategorySlug: 'generator_repair',
+        suggestedCategorySlug: 'generator',
         bio: 'Experienced generator specialist with deep expertise in starting problems, carburetor overhauls, and coil diagnostics.',
         experienceYears: 5,
-        extractedSkills: ['generator_diagnostics', 'generator_starting_problems', 'fuel_system_repair', 'electrical_faults'],
+        extractedSkills: ['Generator diagnostics', 'Starting system repair', 'Fuel system servicing', 'Carburetor servicing'],
         profileCompleteness: 85,
       };
     }
 
-    if (textLower.includes('tailor') || textLower.includes('cloth') || textLower.includes('sew')) {
-      return {
-        suggestedCategorySlug: 'tailor',
-        bio: 'Skilled fashion tailor specializing in custom garment fitting, dress adjustments, and premium zipper replacements.',
-        experienceYears: 4,
-        extractedSkills: ['waist_alteration', 'zip_replacement', 'dress_adjustment'],
-        profileCompleteness: 80,
-      };
-    }
-
     return {
-      suggestedCategorySlug: 'device_repair',
-      bio: 'Professional electronics technician specializing in smartphone screen replacements, charging port repairs, and battery diagnostics.',
-      experienceYears: 3,
-      extractedSkills: ['screen_replacement', 'battery_replacement', 'charging_port_repair'],
-      profileCompleteness: 75,
+      suggestedCategorySlug: 'alteration',
+      bio: 'Skilled tailor & alteration specialist handling waist adjustments, zipper replacements, and custom dress fittings.',
+      experienceYears: 4,
+      extractedSkills: ['Waist adjustment', 'Zip replacement', 'Length alteration'],
+      profileCompleteness: 80,
     };
   }
 
   private static generateProfileFallback(description: string): ProfileParseOutput {
     return {
-      suggestedCategorySlug: 'generator_repair',
+      suggestedCategorySlug: 'generator',
       bio: description.substring(0, 150),
       experienceYears: 2,
-      extractedSkills: ['general_diagnostics'],
+      extractedSkills: ['General diagnostics'],
       profileCompleteness: 50,
     };
   }

@@ -1,5 +1,5 @@
-import app from './server.js';
-import { seedDatabase } from './seed.js';
+import app from './server';
+import { seedDatabase } from './seed';
 import http from 'http';
 
 let server: http.Server;

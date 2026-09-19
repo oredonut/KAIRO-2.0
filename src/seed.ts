@@ -4,27 +4,27 @@ import bcrypt from 'bcryptjs';
 export async function seedDatabase() {
   console.log('[Seed] Populating initial categories, skills, sample artisans, and work portfolios into Firestore...');
 
-  // 1. Categories
+  // 1. Categories matching frontend slugs
   const categories = [
     {
-      id: 'cat_generator_repair',
-      slug: 'generator_repair',
+      id: 'cat_generator',
+      slug: 'generator',
       name: 'Generator Repair',
       description: 'Diagnosis, troubleshooting, and repair for petrol and diesel power generators.',
       isActive: true,
       createdAt: new Date().toISOString(),
     },
     {
-      id: 'cat_clothing_alteration',
-      slug: 'clothing_alteration',
-      name: 'Clothing Alteration',
+      id: 'cat_alteration',
+      slug: 'alteration',
+      name: 'Clothing Alterations',
       description: 'Garment resizing, waist adjustments, zipper replacements, and hem repairs.',
       isActive: true,
       createdAt: new Date().toISOString(),
     },
     {
-      id: 'cat_device_repair',
-      slug: 'device_repair',
+      id: 'cat_device',
+      slug: 'device',
       name: 'Device Repair',
       description: 'Smartphone, tablet, and electronics screen, battery, and charging port repairs.',
       isActive: true,
@@ -46,16 +46,13 @@ export async function seedDatabase() {
 
   // 2. Skills
   const skills = [
-    { id: 'sk_gen_diag', name: 'Generator Diagnostics', slug: 'generator_diagnostics', categoryId: 'cat_generator_repair' },
-    { id: 'sk_gen_start', name: 'Starting Problems', slug: 'generator_starting_problems', categoryId: 'cat_generator_repair' },
-    { id: 'sk_fuel_sys', name: 'Fuel System Repair', slug: 'fuel_system_repair', categoryId: 'cat_generator_repair' },
-    { id: 'sk_elec_fault', name: 'Electrical Faults', slug: 'electrical_faults', categoryId: 'cat_generator_repair' },
-    { id: 'sk_waist_alt', name: 'Waist Alteration', slug: 'waist_alteration', categoryId: 'cat_clothing_alteration' },
-    { id: 'sk_zip_rep', name: 'Zip Replacement', slug: 'zip_replacement', categoryId: 'cat_clothing_alteration' },
-    { id: 'sk_dress_adj', name: 'Dress Adjustment', slug: 'dress_adjustment', categoryId: 'cat_clothing_alteration' },
-    { id: 'sk_screen_rep', name: 'Screen Replacement', slug: 'screen_replacement', categoryId: 'cat_device_repair' },
-    { id: 'sk_battery_rep', name: 'Battery Replacement', slug: 'battery_replacement', categoryId: 'cat_device_repair' },
-    { id: 'sk_port_rep', name: 'Charging Port Repair', slug: 'charging_port_repair', categoryId: 'cat_device_repair' },
+    { id: 'sk_gen_diag', name: 'Generator diagnostics', slug: 'generator_diagnostics', categoryId: 'cat_generator' },
+    { id: 'sk_gen_shut', name: 'Shutdown fault repair', slug: 'generator_shutdown', categoryId: 'cat_generator' },
+    { id: 'sk_fuel_sys', name: 'Carburetor servicing', slug: 'carburetor_servicing', categoryId: 'cat_generator' },
+    { id: 'sk_waist_alt', name: 'Waist adjustment', slug: 'waist_adjustment', categoryId: 'cat_alteration' },
+    { id: 'sk_zip_rep', name: 'Zip replacement', slug: 'zip_replacement', categoryId: 'cat_alteration' },
+    { id: 'sk_screen_rep', name: 'Screen replacement', slug: 'screen_replacement', categoryId: 'cat_device' },
+    { id: 'sk_port_rep', name: 'Charging port repair', slug: 'charging_port_repair', categoryId: 'cat_device' },
   ];
 
   for (const sk of skills) {
@@ -78,7 +75,7 @@ export async function seedDatabase() {
   };
   await db.collection('users').doc(adminUser.id).set(adminUser);
 
-  // 4. Sample Professional 1: Generator Master (Emeka)
+  // 4. Sample Professional 1: Emeka Generator Works (matching art-1 in frontend mockData)
   const profUser1 = {
     id: 'usr_emeka',
     email: 'emeka@generators.com',
@@ -86,6 +83,7 @@ export async function seedDatabase() {
     firstName: 'Emeka',
     lastName: 'Okonkwo',
     phone: '+2348012345678',
+    avatarUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop&auto=format',
     role: 'PROFESSIONAL',
     location: 'Ikeja, Lagos',
     latitude: 6.5965,
@@ -97,14 +95,15 @@ export async function seedDatabase() {
   await db.collection('users').doc(profUser1.id).set(profUser1);
 
   const profProfile1 = {
-    id: 'prof_usr_emeka',
+    id: 'art-1',
     userId: 'usr_emeka',
-    categoryId: 'cat_generator_repair',
+    categoryId: 'generator',
     displayName: 'Emeka Generator Works',
-    bio: '10 years of master level experience in Tiger, Sumec Firman, and Elepaq generator repairs. Specialist in starting failure and carburetor cleaning.',
+    bio: 'Ten years fixing Sumec Firman, Tiger, and Elepaq generators in Ikeja. Specialised in sudden shutdown, starting failure, and carburetor jet overhauls.',
     experienceYears: 10,
-    skills: ['generator_diagnostics', 'generator_starting_problems', 'fuel_system_repair'],
-    services: ['Generator Troubleshooting', 'Coil Replacement'],
+    skills: ['Generator diagnostics', 'Shutdown fault repair', 'Carburetor servicing', 'Coil replacement', 'Oil sensor bypass'],
+    services: ['Generator Troubleshooting', 'Coil Replacement', 'Carburetor Jet Servicing'],
+    brands: ['Sumec Firman', 'Tiger', 'Elepaq', 'Elemax', 'Honda'],
     location: 'Ikeja, Lagos',
     latitude: 6.5965,
     longitude: 3.3421,
@@ -116,8 +115,8 @@ export async function seedDatabase() {
     verificationLevel: 'DOCUMENT_VERIFIED',
     isPro: true,
     ratingAverage: 4.9,
-    reviewCount: 14,
-    completedJobsCount: 18,
+    reviewCount: 47,
+    completedJobsCount: 82,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -125,31 +124,32 @@ export async function seedDatabase() {
 
   // Work sample for Emeka
   const sample1 = {
-    id: 'ws_emeka_1',
-    professionalId: 'prof_usr_emeka',
-    title: 'Sumec Firman 3.5KVA Starter Coil Repair',
-    categoryId: 'cat_generator_repair',
-    problemDescription: 'Generator turned on but died after 2 minutes due to faulty coil overheating.',
-    workDescription: 'Replaced copper coil winding, cleaned carburetor jet, and recalibrated oil sensor.',
-    resultDescription: 'Generator now runs continuously for 8+ hours without power drop.',
-    imageUrls: ['https://kairo-media-uploads.s3.amazonaws.com/samples/generator_repair_1.jpg'],
+    id: 'ws-1',
+    professionalId: 'art-1',
+    title: 'Sumec Firman 3.5KVA Shutdown Repair',
+    categoryId: 'generator',
+    problemDescription: 'Generator starts normally then cuts off after 3-5 minutes of running',
+    workDescription: 'Cleaned clogged carburetor jet, flushed dirty fuel tank, replaced oil alert sensor',
+    resultDescription: 'Runs continuously for 6+ hours under full load without shutting down',
+    imageUrls: ['https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&h=400&fit=crop&auto=format'],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
   await db.collection('work_samples').doc(sample1.id).set(sample1);
 
-  // 5. Sample Professional 2: Bisi Tailoring
+  // 5. Sample Professional 2: Ada Alterations Studio (matching art-5 in frontend mockData)
   const profUser2 = {
-    id: 'usr_bisi',
-    email: 'bisi@tailors.com',
+    id: 'usr_ada',
+    email: 'ada@alterations.com',
     passwordHash: passHash,
-    firstName: 'Bisi',
-    lastName: 'Adeleke',
+    firstName: 'Ada',
+    lastName: 'Nwosu',
     phone: '+2348098765432',
+    avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&auto=format',
     role: 'PROFESSIONAL',
-    location: 'Victoria Island, Lagos',
-    latitude: 6.4281,
-    longitude: 3.4219,
+    location: 'Surulere, Lagos',
+    latitude: 6.5000,
+    longitude: 3.3500,
     isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -157,18 +157,19 @@ export async function seedDatabase() {
   await db.collection('users').doc(profUser2.id).set(profUser2);
 
   const profProfile2 = {
-    id: 'prof_usr_bisi',
-    userId: 'usr_bisi',
-    categoryId: 'cat_clothing_alteration',
-    displayName: 'Bisi Stitches & Alterations',
-    bio: 'Expert tailor specializing in designer dress resizing, suit slimming, zipper replacements, and delicate fabric adjustments.',
+    id: 'art-5',
+    userId: 'usr_ada',
+    categoryId: 'alteration',
+    displayName: 'Ada Alterations Studio',
+    bio: 'Six years of clothing alteration work. Handle all types of adjustments — waist, hem, zip replacement, resizing. Fast turnaround, often same day.',
     experienceYears: 6,
-    skills: ['waist_alteration', 'zip_replacement', 'dress_adjustment'],
-    services: ['Dress Fitting', 'Suit Alteration'],
-    location: 'Victoria Island, Lagos',
-    latitude: 6.4281,
-    longitude: 3.4219,
-    serviceRadiusKm: 20,
+    skills: ['Waist adjustment', 'Zip replacement', 'Length alteration', 'Resizing', 'Invisible zip fitting'],
+    services: ['Waist adjustment', 'Zip replacement', 'Length adjustment', 'General alterations'],
+    brands: ['Ankara', 'Lace', 'Corporate', 'Casual wear'],
+    location: 'Surulere, Lagos',
+    latitude: 6.5000,
+    longitude: 3.3500,
+    serviceRadiusKm: 25,
     availabilityStatus: 'AVAILABLE',
     profileCompleteness: 90,
     isPublished: true,
@@ -176,14 +177,14 @@ export async function seedDatabase() {
     verificationLevel: 'BASIC',
     isPro: false,
     ratingAverage: 4.7,
-    reviewCount: 9,
-    completedJobsCount: 11,
+    reviewCount: 38,
+    completedJobsCount: 55,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
   await db.collection('professional_profiles').doc(profProfile2.id).set(profProfile2);
 
-  console.log('[Seed] Database successfully populated with initial categories, skills, and sample professionals.');
+  console.log('[Seed] Database successfully populated with frontend-aligned categories, skills, and mock professionals.');
 }
 
 if (process.argv[1]?.endsWith('seed.ts')) {
