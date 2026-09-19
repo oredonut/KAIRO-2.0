@@ -11,8 +11,8 @@
     "prestart": "tsc",
     "start": "node dist/server.js",
     "dev": "npx ts-node-dev --respawn --transpile-only src/server.ts",
-    "seed": "npx ts-node src/seed.ts",
-    "test": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\" src/test-suite.ts"
+    "seed": "npm run build && node dist/seed.js",
+    "test": "npm run build && node dist/test-suite.js"
   },
   "keywords": [
     "kairo",
