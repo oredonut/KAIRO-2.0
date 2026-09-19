@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const professionals_controller_js_1 = require("./professionals.controller.js");
+const auth_middleware_js_1 = require("../../middlewares/auth.middleware.js");
+const router = (0, express_1.Router)();
+router.get('/me', auth_middleware_js_1.authenticate, (0, auth_middleware_js_1.requireRole)(['PROFESSIONAL', 'ADMIN']), professionals_controller_js_1.ProfessionalsController.getMyProfile);
+router.get('/:id', professionals_controller_js_1.ProfessionalsController.getProfileById);
+router.patch('/me', auth_middleware_js_1.authenticate, (0, auth_middleware_js_1.requireRole)(['PROFESSIONAL', 'ADMIN']), professionals_controller_js_1.ProfessionalsController.updateProfile);
+router.post('/parse-profile', professionals_controller_js_1.ProfessionalsController.parseProfileDescription);
+exports.default = router;

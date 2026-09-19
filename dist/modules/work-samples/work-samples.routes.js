@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const work_samples_controller_js_1 = require("./work-samples.controller.js");
+const auth_middleware_js_1 = require("../../middlewares/auth.middleware.js");
+const upload_middleware_js_1 = require("../../middlewares/upload.middleware.js");
+const router = (0, express_1.Router)();
+router.post('/', auth_middleware_js_1.authenticate, (0, auth_middleware_js_1.requireRole)(['PROFESSIONAL', 'ADMIN']), upload_middleware_js_1.upload.array('images', 5), work_samples_controller_js_1.WorkSamplesController.createWorkSample);
+router.post('/presigned-url', auth_middleware_js_1.authenticate, work_samples_controller_js_1.WorkSamplesController.getPresignedUrl);
+router.get('/professional/:professionalId', work_samples_controller_js_1.WorkSamplesController.getByProfessionalId);
+exports.default = router;
