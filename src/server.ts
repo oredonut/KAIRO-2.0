@@ -59,7 +59,7 @@ app.use('/api/admin', adminRoutes);
 // Global Error Handler
 app.use(errorHandler);
 
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test' && !process.env.TEST_MODE) {
   app.listen(ENV.PORT, () => {
     console.log(`=======================================================`);
     console.log(`🚀 KAIRO Backend Infrastructure running on port ${ENV.PORT}`);

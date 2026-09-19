@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'test';
+process.env.TEST_MODE = 'true';
 import app from './server';
 import { seedDatabase } from './seed';
 import http from 'http';

@@ -25,8 +25,8 @@ export interface ProfessionalProfile {
   displayName: string;
   bio: string;
   experienceYears: number;
-  skills: string[]; // Skill IDs or normalized skill names
-  services: string[]; // Service IDs or names
+  skills: string[];
+  services: string[];
   brands?: string[];
   location: string;
   latitude: number;
@@ -35,7 +35,9 @@ export interface ProfessionalProfile {
   availabilityStatus: 'AVAILABLE' | 'BUSY' | 'UNAVAILABLE';
   profileCompleteness: number; // 0 - 100
   isPublished: boolean;
-  isVerified: boolean; // Must NEVER be true by default on creation
+  isVerified: boolean; // Must NEVER be automatically true upon profile creation
+  isIdentityVerified?: boolean;
+  isPhoneVerified?: boolean;
   verificationLevel?: 'BASIC' | 'DOCUMENT_VERIFIED' | 'BACKGROUND_CHECKED';
   isPro: boolean;
   ratingAverage: number;
@@ -47,7 +49,7 @@ export interface ProfessionalProfile {
 
 export interface Category {
   id: string;
-  slug: string; // e.g. tailor, clothing_alteration, generator_repair, device_repair
+  slug: string;
   name: string;
   description: string;
   isActive: boolean;
@@ -120,15 +122,26 @@ export interface ProblemAnalysis {
   createdAt: string;
 }
 
-export type EnquiryStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED' | 'COMPLETED' | 'CANCELLED';
+export type EnquiryStatus = 'new' | 'accepted' | 'in-progress' | 'completed' | 'declined' | 'cancelled' | 'PENDING' | 'ACCEPTED' | 'IN_PROGRESS' | 'COMPLETED' | 'DECLINED' | 'CANCELLED';
 
 export interface Enquiry {
   id: string;
-  problemRequestId: string;
+  problemRequestId?: string;
   customerId: string;
+  customerName?: string;
+  customerPhone?: string;
   professionalId: string;
+  artisanId?: string;
+  problemText?: string;
+  serviceLabel?: string;
+  brand?: string;
+  location?: string;
+  when?: string;
   status: EnquiryStatus;
-  message: string;
+  statusText?: string;
+  message?: string;
+  matchReasons?: string[];
+  dateSent?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -152,11 +165,14 @@ export interface SavedProfessional {
 
 export interface Notification {
   id: string;
-  userId: string;
+  userId?: string;
+  artisanId?: string;
   title: string;
   message: string;
-  type: 'ENQUIRY' | 'SYSTEM' | 'REVIEW' | 'VERIFICATION';
+  type?: 'ENQUIRY' | 'SYSTEM' | 'REVIEW' | 'VERIFICATION';
   isRead: boolean;
+  time?: string;
+  enquiryId?: string;
   createdAt: string;
 }
 
@@ -166,5 +182,14 @@ export interface Subscription {
   plan: 'FREE' | 'PRO_MONTHLY' | 'PRO_ANNUAL';
   status: 'ACTIVE' | 'EXPIRED' | 'CANCELLED';
   expiresAt: string;
+  createdAt: string;
+}
+
+export interface ModerationReport {
+  id: string;
+  target: string;
+  content: string;
+  aiNote: string;
+  status: 'PENDING' | 'APPROVED' | 'REMOVED';
   createdAt: string;
 }

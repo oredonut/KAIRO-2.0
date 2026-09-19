@@ -11,6 +11,7 @@ export interface AuthenticatedRequest extends Request {
     role: UserRole;
     firstName?: string;
     lastName?: string;
+    phone?: string;
   };
 }
 

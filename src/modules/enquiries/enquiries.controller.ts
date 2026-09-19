@@ -2,27 +2,53 @@ import { Response } from 'express';
 import { db } from '../../config/firebase';
 import { sendSuccess, sendError } from '../../utils/response';
 import { AuthenticatedRequest } from '../../middlewares/auth.middleware';
-import { Enquiry, Notification } from '../../types/index';
+import { Enquiry, Notification } from '../../types';
 
 export class EnquiriesController {
   static async createEnquiry(req: AuthenticatedRequest, res: Response) {
     try {
-      const customerId = req.user?.id;
-      const { problemRequestId, professionalId, message } = req.body;
+      const customerId = req.user?.id || 'guest_user';
+      const {
+        problemRequestId,
+        professionalId,
+        artisanId,
+        customerName,
+        customerPhone,
+        problemText,
+        serviceLabel,
+        brand,
+        location,
+        when,
+        message,
+        matchReasons,
+      } = req.body;
 
-      if (!problemRequestId || !professionalId) {
-        return sendError(res, 'problemRequestId and professionalId are required.');
+      const targetProfId = professionalId || artisanId;
+
+      if (!targetProfId) {
+        return sendError(res, 'professionalId or artisanId is required.');
       }
 
-      const enquiryId = 'enq_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+      const enquiryId = 'req-' + Date.now();
 
       const enquiry: Enquiry = {
         id: enquiryId,
-        problemRequestId,
-        customerId: customerId || 'guest_user',
-        professionalId,
-        status: 'PENDING',
-        message: message || 'I would like to enquire about your services for my problem.',
+        problemRequestId: problemRequestId || 'pr_' + Date.now(),
+        customerId,
+        customerName: customerName || (req.user ? `${req.user.firstName} ${req.user.lastName}` : 'Customer'),
+        customerPhone: customerPhone || req.user?.phone || '',
+        professionalId: targetProfId,
+        artisanId: targetProfId,
+        problemText: problemText || message || 'Service enquiry requested.',
+        serviceLabel: serviceLabel || 'Technical Repair',
+        brand: brand || '',
+        location: location || '',
+        when: when || 'Today',
+        status: 'new',
+        statusText: 'New Enquiry',
+        message: message || problemText || 'Service enquiry requested.',
+        matchReasons: matchReasons || ['Category match', 'Verified artisan'],
+        dateSent: 'Just now',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -30,16 +56,19 @@ export class EnquiriesController {
       await db.collection('enquiries').doc(enquiryId).set(enquiry);
 
       // Fetch professional to get userId for notification
-      const profDoc = await db.collection('professional_profiles').doc(professionalId).get();
+      const profDoc = await db.collection('professional_profiles').doc(targetProfId).get();
       if (profDoc.exists) {
         const profData = profDoc.data();
         const notification: Notification = {
-          id: 'notif_' + Date.now(),
+          id: 'notif-' + Date.now(),
           userId: profData.userId,
-          title: 'New Customer Enquiry',
-          message: `A customer has sent you an enquiry for problem request #${problemRequestId.substring(0, 8)}.`,
+          artisanId: targetProfId,
+          title: 'New Customer Enquiry Received!',
+          message: `${enquiry.customerName} sent an enquiry for ${enquiry.serviceLabel} in ${enquiry.location || 'your area'}.`,
           type: 'ENQUIRY',
           isRead: false,
+          time: 'Just now',
+          enquiryId,
           createdAt: new Date().toISOString(),
         };
         await db.collection('notifications').doc(notification.id).set(notification);
@@ -56,7 +85,19 @@ export class EnquiriesController {
       const { id } = req.params;
       const { status } = req.body;
 
-      if (!['PENDING', 'ACCEPTED', 'DECLINED', 'COMPLETED', 'CANCELLED'].includes(status)) {
+      const normalizedStatus = (status || '').toLowerCase();
+      const statusTexts: Record<string, string> = {
+        new: 'New Enquiry',
+        pending: 'New Enquiry',
+        accepted: 'Accepted',
+        'in-progress': 'In Progress',
+        in_progress: 'In Progress',
+        completed: 'Completed',
+        declined: 'Declined',
+        cancelled: 'Cancelled',
+      };
+
+      if (!statusTexts[normalizedStatus]) {
         return sendError(res, 'Invalid enquiry status.');
       }
 
@@ -66,21 +107,29 @@ export class EnquiriesController {
       }
 
       const existing: Enquiry = doc.data();
-      const updated = { status, updatedAt: new Date().toISOString() };
+      const updated = {
+        status: normalizedStatus as any,
+        statusText: statusTexts[normalizedStatus],
+        updatedAt: new Date().toISOString(),
+      };
+
       await db.collection('enquiries').doc(id).update(updated);
 
-      // If status is COMPLETED, increment completedJobsCount on ProfessionalProfile
-      if (status === 'COMPLETED') {
-        const profDoc = await db.collection('professional_profiles').doc(existing.professionalId).get();
-        if (profDoc.exists) {
-          const prof = profDoc.data();
-          await db.collection('professional_profiles').doc(existing.professionalId).update({
-            completedJobsCount: (prof.completedJobsCount || 0) + 1,
-          });
+      // Increment completedJobs if completed
+      if (normalizedStatus === 'completed') {
+        const targetProfId = existing.professionalId || existing.artisanId;
+        if (targetProfId) {
+          const profDoc = await db.collection('professional_profiles').doc(targetProfId).get();
+          if (profDoc.exists) {
+            const prof = profDoc.data();
+            await db.collection('professional_profiles').doc(targetProfId).update({
+              completedJobsCount: (prof.completedJobsCount || 0) + 1,
+            });
+          }
         }
       }
 
-      return sendSuccess(res, { ...existing, ...updated }, `Enquiry status updated to ${status}.`);
+      return sendSuccess(res, { ...existing, ...updated }, `Enquiry status updated to ${statusTexts[normalizedStatus]}.`);
     } catch (err: any) {
       return sendError(res, err.message || 'Failed to update enquiry status.', 500);
     }

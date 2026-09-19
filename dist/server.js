@@ -56,7 +56,7 @@ app.use('/api/subscriptions', subscriptions_routes_1.default);
 app.use('/api/admin', admin_routes_1.default);
 // Global Error Handler
 app.use(error_middleware_1.errorHandler);
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test' && !process.env.TEST_MODE) {
     app.listen(env_1.ENV.PORT, () => {
         console.log(`=======================================================`);
         console.log(`🚀 KAIRO Backend Infrastructure running on port ${env_1.ENV.PORT}`);

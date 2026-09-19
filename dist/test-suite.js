@@ -3,6 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+process.env.NODE_ENV = 'test';
+process.env.TEST_MODE = 'true';
 const server_1 = __importDefault(require("./server"));
 const seed_1 = require("./seed");
 let server;

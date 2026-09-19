@@ -6,4 +6,6 @@ const auth_middleware_1 = require("../../middlewares/auth.middleware");
 const router = (0, express_1.Router)();
 router.patch('/professionals/:professionalId/verify', auth_middleware_1.authenticate, (0, auth_middleware_1.requireRole)(['ADMIN']), admin_controller_1.AdminController.verifyProfessional);
 router.get('/metrics', auth_middleware_1.authenticate, (0, auth_middleware_1.requireRole)(['ADMIN']), admin_controller_1.AdminController.getDashboardMetrics);
+router.get('/reports', auth_middleware_1.authenticate, (0, auth_middleware_1.requireRole)(['ADMIN']), admin_controller_1.AdminController.getModerationReports);
+router.post('/reports/:id/action', auth_middleware_1.authenticate, (0, auth_middleware_1.requireRole)(['ADMIN']), admin_controller_1.AdminController.actionModerationReport);
 exports.default = router;
