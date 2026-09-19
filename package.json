@@ -1,0 +1,47 @@
+{
+  "name": "kairo-backend",
+  "version": "1.0.0",
+  "description": "KAIRO Backend Infrastructure - AI-powered local problem-solving and skills-to-income platform",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "npx ts-node-dev --respawn --transpile-only src/server.ts",
+    "seed": "npx ts-node src/seed.ts",
+    "test": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\" src/test-suite.ts"
+  },
+  "keywords": [
+    "kairo",
+    "ai",
+    "skills-to-income",
+    "firebase",
+    "aws",
+    "typescript",
+    "express"
+  ],
+  "author": "KAIRO Backend Team",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.500.0",
+    "@aws-sdk/s3-request-presigner": "^3.500.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "firebase-admin": "^12.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/multer": "^1.4.11",
+    "@types/node": "^20.12.7",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.4.5"
+  }
+}
